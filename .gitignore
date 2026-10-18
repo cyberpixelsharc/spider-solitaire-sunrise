@@ -1,0 +1,19 @@
+# Internal development notes (not part of the published app)
+AGENTS.md
+
+# OS cruft
+.DS_Store
+.DS_Store?
+._*
+.Thumbs.db
+Thumbs.db
+
+# Editors / IDEs
+.vscode/
+.idea/
+*.swp
+*~
+
+# Dependencies (installed only in a temp dir for headless tests)
+node_modules/
+npm-debug.log*

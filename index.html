@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <title>Spider Solitaire: Sunrise</title>
+  <meta name="description" content="Classic Spider Solitaire as a lightweight offline web app." />
+  <meta name="theme-color" content="#0b2b22" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Spider Sunrise" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" type="image/svg+xml" href="icons/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/favicon-192.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img src="icons/favicon.svg" class="logo" alt="" width="26" height="26" />
+      <h1>Spider Solitaire: Sunrise</h1>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><span class="label" data-i18n="stats.time">Time</span><span class="value" id="time">00:00</span></div>
+      <div class="stat"><span class="label" data-i18n="stats.moves">Moves</span><span class="value" id="moves">0</span></div>
+      <div class="stat"><span class="label" data-i18n="stats.score">Score</span><span class="value" id="score">500</span></div>
+    </div>
+
+    <div class="actions">
+      <button class="btn" id="btn-undo" data-i18n-title="btn.undo.title" title="Undo last move">↶ <span data-i18n="btn.undo">Undo</span></button>
+      <button class="btn" id="btn-hint" data-i18n-title="btn.hint.title" title="Show a hint">💡 <span data-i18n="btn.hint">Hint</span></button>
+      <button class="btn primary" id="btn-new" data-i18n-title="btn.new.title" title="Start a new game">＋ <span data-i18n="btn.new">New Game</span></button>
+    </div>
+  </header>
+
+  <main id="board">
+    <div id="slots">
+      <div class="slot" id="stock-slot"></div>
+    </div>
+    <div id="cards"></div>
+  </main>
+
+  <div class="overlay" id="overlay"></div>
+  <div class="toast" id="toast"></div>
+
+  <script src="i18n.js"></script>
+  <script src="version.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
