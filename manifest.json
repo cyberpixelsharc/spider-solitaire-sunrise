@@ -1,11 +1,12 @@
 {
+  "id": "spider-sunrise-game",
   "name": "Spider Solitaire: Sunrise",
-  "short_name": "Spider Sunrise",
+  "short_name": "S.S. Sunrise",
   "description": "Classic Spider Solitaire as a lightweight offline web app.",
   "lang": "en",
   "dir": "ltr",
-  "start_url": "./",
-  "scope": "./",
+  "start_url": "https://cyberpixelsharc.github.io/spider-solitaire-sunrise/index.html",
+  "scope": "https://cyberpixelsharc.github.io/spider-solitaire-sunrise/",
   "display": "standalone",
   "orientation": "any",
   "background_color": "#123027",
@@ -13,19 +14,19 @@
   "categories": ["games", "entertainment"],
   "icons": [
     {
-      "src": "icons/favicon-192.png",
+      "src": "https://cyberpixelsharc.github.io/spider-solitaire-sunrise/icons/favicon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icons/icon-512.png",
+      "src": "https://cyberpixelsharc.github.io/spider-solitaire-sunrise/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icons/icon-maskable-512.png",
+      "src": "https://cyberpixelsharc.github.io/spider-solitaire-sunrise/icons/icon-maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"

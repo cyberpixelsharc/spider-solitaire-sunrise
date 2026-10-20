@@ -1,4 +1,4 @@
-const CACHE = "spider-sunrise-v1";
+const CACHE = "spider-sunrise-v3";
 
 const ASSETS = [
   "./",
@@ -7,7 +7,7 @@ const ASSETS = [
   "./script.js",
   "./i18n.js",
   "./version.js",
-  "./manifest.webmanifest",
+  "./manifest.json",
   "./icons/favicon.svg",
   "./icons/favicon-32.png",
   "./icons/favicon-192.png",

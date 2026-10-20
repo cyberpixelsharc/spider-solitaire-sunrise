@@ -15,7 +15,7 @@ The UI is multilingual and automatically picks your browser language. English is
 The goal is to build eight complete sequences, each running from **King down to Ace** in a **single suit**. When a full K–A sequence is formed in a column, it is removed automatically and placed in one of the eight foundation frames at the top.
 
 ### Setup
-- 104 cards are shuffled and dealt into **10 tableau columns**.
+- 8 x 13 cards are shuffled and dealt into **10 tableau columns**.
 - Each column starts with face-down cards; only the top card is face-up.
 - The remaining cards form a **stock** in the top-left corner (5 deals of 10 cards).
 
@@ -81,7 +81,7 @@ Texts are stored in `i18n.js` (no libraries). Add a new language by extending th
 - `version.js` — app version and build date
 - `style.css` — styling
 - `script.js` — all game logic
-- `manifest.webmanifest` — PWA manifest (name, icons, colors)
+- `manifest.json` — PWA manifest (name, icons, colors)
 - `sw.js` — service worker for offline caching
 - `icons/` — logo and app icons (`favicon.svg`, PNG favicons, `apple-touch-icon.png`, PWA `icon-512.png` / `icon-maskable-512.png`)
 - `screenshots/` — images used in this README
@@ -94,9 +94,7 @@ Open `index.html` directly in a browser (double-click or `file://`). No server o
 
 The game is a Progressive Web App: it has a manifest, app icons and a service worker, so browsers can install it as a standalone app icon and it keeps working **offline** afterwards.
 
-Installing needs **no terminal** — just open the game at its web address (for example `https://your-domain.example/`) and use your browser's install option below. The browser steps work the same on a phone and on a computer; nothing is typed.
-
-> **Note:** Browsers only offer installation from a secure address — **`https://`** or **`localhost`**. Once the game is hosted online this is automatic; the person publishing it sets that up **once** (e.g. on GitHub Pages, Netlify or Cloudflare Pages), and everyone else simply opens the link. Opening the file straight from disk (`file://`) is fine for playing, but browsers will not offer to install it.
+Just open the game at [cyberpixelsharc.github.io/spider-solitaire-sunrise](https://cyberpixelsharc.github.io/spider-solitaire-sunrise/) and use your browser's install option below. The browser steps work the same on a phone and on a computer; nothing is typed.
 
 Pick your browser below.
 
@@ -136,17 +134,6 @@ Pick your browser below.
 - Full offline play after the first visit (assets are cached by the service worker).
 
 To pick up updates, reload the page once while online; the service worker refreshes its cache in the background.
-
-### Local testing (developers only)
-
-Regular players never need this. To try the install locally before publishing, serve the folder over a web server and open it via `localhost`:
-
-```sh
-cd path/to/spider-solitaire-sunrise
-python3 -m http.server 8000
-```
-
-Then open `http://localhost:8000/` and use the browser steps above.
 
 ## License
 

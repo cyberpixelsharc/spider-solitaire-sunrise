@@ -11,6 +11,8 @@
   const COLS = 10;
   const RUN_LEN = 13;
   const FOUND_SLOTS = 8;
+  const STOCK_LAYERS = 5;
+  const DEAL_LEADIN = 400;
 
   const i18n = window.i18n;
   const t = (key, params) => i18n.t(key, params);
@@ -49,6 +51,8 @@
   let autoFinishTried = false;
   let autoPlan = null;
   let autoPlanIndex = 0;
+  let infoClose = null;
+  let leaveConfirmClose = null;
 
   let timer = null;
   let timerRunning = false;
@@ -135,7 +139,7 @@
     });
 
     const stock = [];
-    for (let d = 0; d < 5; d++) {
+    for (let d = 0; d < STOCK_LAYERS; d++) {
       const group = [];
       for (let i = 0; i < COLS; i++) {
         const card = deck.pop();
@@ -151,6 +155,7 @@
     const all = [];
     columns.forEach((c) => all.push(...c));
     stock.forEach((g) => all.push(...g));
+    const stockCards = stock.flat();
     all.forEach((card) => {
       const el = document.createElement("div");
       el.className = "card down";
@@ -175,13 +180,28 @@
     void cardsLayer.offsetWidth;
 
     requestAnimationFrame(() => {
+      const pilePlaces = computePlacements();
+      stockCards.forEach((card) => {
+        const el = cardEls.get(card.id);
+        const p = pilePlaces.get(card.id);
+        el.style.transform = "translate3d(" + p.x + "px," + p.y + "px,0)";
+        el.classList.toggle("top", !!p.top);
+      });
       cardEls.forEach((el) => {
         el.style.transition = "";
       });
-      render({ deal: true, elevate: all, elevateDelay: 1250 });
       setTimeout(() => {
+        cardEls.forEach((el) => {
+          el.style.transition = "none";
+          el.style.transitionDelay = "";
+        });
+        render();
+        void cardsLayer.offsetWidth;
+        cardEls.forEach((el) => {
+          el.style.transition = "";
+        });
         dealing = false;
-      }, 1050);
+      }, DEAL_LEADIN);
     });
   }
 
@@ -203,6 +223,7 @@
 
     board.style.setProperty("--cw", cardW + "px");
     board.style.setProperty("--ch", cardH + "px");
+    document.documentElement.style.setProperty("--gutter", offsetX + "px");
 
     const tableTop = pad + cardH + Math.max(12, cardH * 0.18, H * 0.035);
     const tableH = Math.max(140, H - tableTop - pad);
@@ -218,9 +239,11 @@
       }
       need = Math.max(need, t);
     });
-    const k = need > tableH ? tableH / need : 1;
-    const upOff = Math.max(6, upMax * k);
-    const downOff = Math.max(3, downMax * k);
+    const offMax = need - cardH;
+    const offAvail = tableH - cardH;
+    const k = offMax > offAvail && offMax > 0 ? Math.max(0, offAvail / offMax) : 1;
+    const upOff = Math.max(2, upMax * k);
+    const downOff = Math.max(1.5, downMax * k);
 
     const foundX0 = offsetX + 2 * (cardW + gap);
 
@@ -254,13 +277,15 @@
     const map = new Map();
 
     state.stock.forEach((group, di) => {
-      group.forEach((card) => {
+      const off = di * 3;
+      group.forEach((card, gi) => {
         map.set(card.id, {
-          x: d.stockX + di * 3,
-          y: d.stockY + di * 3,
+          x: d.stockX + off,
+          y: d.stockY + off,
           z: 1 + di,
           down: true,
           delay: 0,
+          top: gi !== 0,
         });
       });
     });
@@ -268,8 +293,8 @@
     let fz = 6000;
     state.foundations.forEach((run, fi) => {
       const fx = d.foundX0 + (FOUND_SLOTS - 1 - fi) * (d.cardW + d.gap);
-      run.forEach((card) => {
-        map.set(card.id, { x: fx, y: d.foundY, z: fz++, down: false, delay: 0 });
+      run.forEach((card, ri) => {
+        map.set(card.id, { x: fx, y: d.foundY, z: fz++, down: false, delay: 0, top: ri !== 0 });
       });
     });
 
@@ -295,6 +320,7 @@
   }
 
   function render(opts = {}) {
+    measure();
     const placements = computePlacements();
     currentPositions = placements;
 
@@ -329,7 +355,14 @@
       const el = cardEls.get(id);
       if (!el) return;
       if (opts.deal) el.style.transitionDelay = p.delay + "ms";
+      if (opts.deal && elevateZ.has(id)) {
+        const from = parseXY(el.style.transform);
+        if (!from || Math.hypot(p.x - from.x, p.y - from.y) > 24) {
+          scheduleMoving(el, p.delay);
+        }
+      }
       el.classList.toggle("down", p.down);
+      el.classList.toggle("top", !!p.top);
       el.style.transform = "translate3d(" + p.x + "px," + p.y + "px,0)";
       el.style.zIndex = elevateZ.has(id) ? elevateZ.get(id) : p.z;
     });
@@ -368,6 +401,23 @@
   /* ---------------------------------------------------------------
      Helpers
   --------------------------------------------------------------- */
+  function parseXY(t) {
+    const m = /translate3d\((-?[\d.]+)px,\s*(-?[\d.]+)px/.exec(t || "");
+    return m ? { x: parseFloat(m[1]), y: parseFloat(m[2]) } : null;
+  }
+
+  function scheduleMoving(el, delay) {
+    clearTimeout(el._moveStart);
+    clearTimeout(el._moveEnd);
+    el._moveStart = setTimeout(() => {
+      el.classList.add("moving");
+      el._moveEnd = setTimeout(() => {
+        el.classList.remove("moving");
+        el._moveEnd = null;
+      }, 320);
+    }, delay);
+  }
+
   function isRun(col, i) {
     if (!col[i] || !col[i].faceUp) return false;
     for (let j = i; j < col.length - 1; j++) {
@@ -566,7 +616,7 @@
   }
 
   /* ---------------------------------------------------------------
-     Auto-Finish (wenn keine verdeckten Karten mehr liegen)
+     Auto-Finish
   --------------------------------------------------------------- */
   function allFaceUp() {
     return state.columns.every((col) => col.every((c) => c.faceUp));
@@ -775,6 +825,7 @@
       toast(t("toast.nothingUndo"));
       return;
     }
+    const prev = currentPositions;
     const h = history.pop();
     state = {
       columns: h.columns,
@@ -784,7 +835,12 @@
       score: h.score,
     };
     measure();
-    render();
+    const moving = [];
+    computePlacements().forEach((p, id) => {
+      const q = prev.get(id);
+      if (q && Math.hypot(p.x - q.x, p.y - q.y) > 24) moving.push({ id });
+    });
+    render({ elevate: moving });
     updateStats();
   }
 
@@ -957,6 +1013,11 @@
   });
 
   window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && (infoClose || leaveConfirmClose)) {
+      if (infoClose) infoClose();
+      else leaveConfirmClose();
+      return;
+    }
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") {
       e.preventDefault();
       if (autoPlaying) return;
@@ -971,7 +1032,15 @@
   document.getElementById("btn-hint").addEventListener("click", () => {
     if (state && !dealing && !autoPlaying) showHint();
   });
-  document.getElementById("btn-new").addEventListener("click", showMenu);
+  document.getElementById("btn-leave").addEventListener("click", confirmLeaveGame);
+  const brandEl = document.getElementById("btn-info");
+  brandEl.addEventListener("click", showInfo);
+  brandEl.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      showInfo();
+    }
+  });
 
   /* ---------------------------------------------------------------
      UI / stats
@@ -1040,7 +1109,7 @@
   }
 
   /* ---------------------------------------------------------------
-     Sieg-Animation (Kaskade im Windows-3.11-Stil)
+     Win-Animation
   --------------------------------------------------------------- */
   function stopWinAnim() {
     if (winAnimRaf) cancelAnimationFrame(winAnimRaf);
@@ -1134,6 +1203,7 @@
     const bounce = 340;
     const hops = 4;
     const decay = 0.55;
+    const hopScale = 3;
     const sfx = 1.5;
     const launchStep = 45;
     const pieces = [];
@@ -1162,12 +1232,12 @@
           drift *= 0.6;
         }
         const pts = xs.map((x, k) => ({ x, y: k === 0 ? oy : landY }));
-        const bH = H * 0.05 + rand() * H * 0.05;
+        const bH = (H * 0.05 + rand() * H * 0.05) * hopScale;
         const hs = [H * 0.16];
         const durs = [fall];
         for (let k = 0; k < hops; k++) {
           hs.push(bH * Math.pow(decay, k));
-          durs.push(bounce * Math.pow(0.88, k));
+          durs.push(bounce * Math.sqrt(hopScale) * Math.pow(0.88, k));
         }
         const motion = durs.reduce((a, b) => a + b, 0);
         const p = ci;
@@ -1214,6 +1284,12 @@
   /* ---------------------------------------------------------------
      Overlays
   --------------------------------------------------------------- */
+  function suitIcons(suits) {
+    return suits
+      .map((s) => '<span class="suit ' + SUITS[s].color + '">' + SUITS[s].sym + "</span>")
+      .join("");
+  }
+
   function showMenu() {
     stopWinAnim();
     stopTimer();
@@ -1224,9 +1300,9 @@
       "<h2>Spider Solitaire: Sunrise</h2>" +
       '<p class="sub">' + t("menu.subtitle") + "</p>" +
       '<div class="difficulty">' +
-      '<button class="diff' + (difficulty === 1 ? " selected" : "") + '" data-suits="1"><strong>' + t("menu.oneSuit") + "</strong><span>" + t("menu.easy") + "</span></button>" +
-      '<button class="diff' + (difficulty === 2 ? " selected" : "") + '" data-suits="2"><strong>' + t("menu.twoSuits") + "</strong><span>" + t("menu.medium") + "</span></button>" +
-      '<button class="diff' + (difficulty === 4 ? " selected" : "") + '" data-suits="4"><strong>' + t("menu.fourSuits") + "</strong><span>" + t("menu.hard") + "</span></button>" +
+      '<button class="diff' + (difficulty === 1 ? " selected" : "") + '" data-suits="1" title="' + t("menu.oneSuit") + '" aria-label="' + t("menu.oneSuit") + " · " + t("menu.easy") + '"><strong class="suits">' + suitIcons(["S"]) + "</strong><span>" + t("menu.easy") + "</span></button>" +
+      '<button class="diff' + (difficulty === 2 ? " selected" : "") + '" data-suits="2" title="' + t("menu.twoSuits") + '" aria-label="' + t("menu.twoSuits") + " · " + t("menu.medium") + '"><strong class="suits">' + suitIcons(["S", "H"]) + "</strong><span>" + t("menu.medium") + "</span></button>" +
+      '<button class="diff' + (difficulty === 4 ? " selected" : "") + '" data-suits="4" title="' + t("menu.fourSuits") + '" aria-label="' + t("menu.fourSuits") + " · " + t("menu.hard") + '"><strong class="suits">' + suitIcons(["S", "H", "C", "D"]) + "</strong><span>" + t("menu.hard") + "</span></button>" +
       "</div>" +
       '<button class="btn primary big" id="btn-start">' + t("menu.start") + "</button>" +
       (ver ? '<div class="app-version">' + ver + "</div>" : "") +
@@ -1246,6 +1322,65 @@
       overlay.classList.remove("show");
       newGame(difficulty);
     });
+  }
+
+  function confirmLeaveGame() {
+    if (!state) {
+      showMenu();
+      return;
+    }
+    const wasRunning = timerRunning;
+    if (wasRunning) stopTimer();
+    overlay.innerHTML =
+      '<div class="modal">' +
+      "<h2>" + t("confirm.leave.title") + "</h2>" +
+      '<p class="sub">' + t("confirm.leave.text") + "</p>" +
+      '<div class="modal-actions">' +
+      '<button class="btn" id="btn-cancel-leave">' + t("confirm.cancel") + "</button>" +
+      '<button class="btn primary" id="btn-confirm-leave">' + t("confirm.leave.ok") + "</button>" +
+      "</div>" +
+      "</div>";
+    overlay.classList.add("show");
+    document.body.classList.add("overlay-open");
+    leaveConfirmClose = () => {
+      leaveConfirmClose = null;
+      overlay.classList.remove("show");
+      document.body.classList.remove("overlay-open");
+      if (wasRunning && state) ensureTimer();
+    };
+    overlay.querySelector("#btn-cancel-leave").addEventListener("click", () => {
+      if (leaveConfirmClose) leaveConfirmClose();
+    });
+    overlay.querySelector("#btn-confirm-leave").addEventListener("click", () => {
+      leaveConfirmClose = null;
+      overlay.classList.remove("show");
+      document.body.classList.remove("overlay-open");
+      showMenu();
+    });
+  }
+
+  function showInfo() {
+    const ver = appVersionLine();
+    const wasRunning = timerRunning;
+    if (wasRunning) stopTimer();
+    overlay.innerHTML =
+      '<div class="modal">' +
+      '<img src="icons/favicon.svg" class="modal-logo" alt="" width="68" height="68" />' +
+      "<h2>Spider Solitaire: Sunrise</h2>" +
+      '<p class="about">' + t("info.text") + "</p>" +
+      '<button class="btn primary big" id="btn-close-info">' + t("info.close") + "</button>" +
+      (ver ? '<div class="app-version">' + ver + "</div>" : "") +
+      '<a class="src" href="https://github.com/cyberpixelsharc/spider-solitaire-sunrise" target="_blank" rel="noopener">' + t("info.source") + "</a>" +
+      "</div>";
+    overlay.classList.add("show");
+    document.body.classList.add("overlay-open");
+    infoClose = () => {
+      infoClose = null;
+      overlay.classList.remove("show");
+      document.body.classList.remove("overlay-open");
+      if (wasRunning && state) ensureTimer();
+    };
+    overlay.querySelector("#btn-close-info").addEventListener("click", () => infoClose());
   }
 
   function showWin() {
@@ -1279,7 +1414,9 @@
 
   if ("serviceWorker" in navigator && location.protocol.indexOf("http") === 0) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("sw.js").catch(() => {});
+      navigator.serviceWorker.register("sw.js").catch((err) => {
+        console.error("Service worker registration failed:", err);
+      });
     });
   }
 
