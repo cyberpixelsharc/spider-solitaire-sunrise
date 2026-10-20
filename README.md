@@ -6,9 +6,13 @@ The UI is multilingual and automatically picks your browser language. English is
 
 ## Screenshots
 
-| Start menu | Game in progress | Win screen |
-| --- | --- | --- |
-| ![Start menu](screenshots/menu.jpg) | ![Game in progress](screenshots/game.jpg) | ![Win screen](screenshots/win.jpg) |
+| Start menu | Game in progress |
+| --- | --- |
+| ![Start menu](screenshots/menu.jpg) | ![Game in progress](screenshots/game.jpg) |
+
+| Info dialog | Win screen |
+| --- | --- |
+| ![Info dialog](screenshots/info.jpg) | ![Win screen](screenshots/win.jpg) |
 
 ## How to play
 
