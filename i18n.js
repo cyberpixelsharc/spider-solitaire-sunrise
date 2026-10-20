@@ -35,6 +35,7 @@
     "app.name": "Spider Solitaire: Sunrise",
     "info.text": "The cards must be sorted in the ten tableau columns. The goal is to build eight complete sequences, each running from King down to Ace. A complete King-to-Ace sequence in a single suit is moved automatically to one of the eight foundation frames at the top. The remaining cards can be dealt in batches from the top-left corner.",
     "info.close": "Close",
+    "info.install": "Install app",
     "info.source": "Source on GitHub",
   };
 
@@ -72,6 +73,7 @@
     "app.name": "Spider Solitaire: Sunrise",
     "info.text": "Die Karten müssen in den zehn Tableau-Spalten geordnet werden. Ziel ist es, acht vollständige Sequenzen zu bilden, jeweils vom König bis zum Ass. Eine vollständige K-A-Sequenz in einer einzigen Farbe wird automatisch in einen der acht Ablagerahmen oben verschoben. Die restlichen Karten können stapelweise aus der oberen linken Ecke entnommen werden.",
     "info.close": "Schließen",
+    "info.install": "App installieren",
     "info.source": "Quellcode auf GitHub",
   };
 
@@ -109,6 +111,7 @@
     "app.name": "Spider Solitaire: Sunrise",
     "info.text": "Les cartes doivent être rangées dans les dix colonnes du tableau. Le but est de former huit séquences complètes, chacune allant du Roi à l'As. Une séquence complète du Roi à l'As dans une seule couleur est déplacée automatiquement vers l'un des huit emplacements de fondation en haut. Les cartes restantes peuvent être distribuées par paquets depuis le coin supérieur gauche.",
     "info.close": "Fermer",
+    "info.install": "Installer l'application",
     "info.source": "Code source sur GitHub",
   };
 
@@ -146,6 +149,7 @@
     "app.name": "Spider Solitaire: Sunrise",
     "info.text": "Las cartas deben ordenarse en las diez columnas del tablero. El objetivo es formar ocho secuencias completas, cada una desde el Rey hasta el As. Una secuencia completa de Rey a As en un solo palo se mueve automáticamente a uno de los ocho marcos de fundación de arriba. Las cartas restantes se pueden repartir por grupos desde la esquina superior izquierda.",
     "info.close": "Cerrar",
+    "info.install": "Instalar la aplicación",
     "info.source": "Código en GitHub",
   };
 
@@ -183,6 +187,7 @@
     "app.name": "Spider Solitaire: Sunrise",
     "info.text": "Le carte devono essere ordinate nelle dieci colonne del tableau. L'obiettivo è formare otto sequenze complete, ciascuna dal Re all'Asso. Una sequenza completa dal Re all'Asso in un solo seme viene spostata automaticamente in uno degli otto riquadri di fondazione in alto. Le carte rimanenti possono essere distribuite a gruppi dall'angolo in alto a sinistra.",
     "info.close": "Chiudi",
+    "info.install": "Installa l'app",
     "info.source": "Codice su GitHub",
   };
 
@@ -220,6 +225,7 @@
     "app.name": "Spider Solitaire: Sunrise",
     "info.text": "As cartas devem ser organizadas nas dez colunas do tableau. O objetivo é formar oito sequências completas, cada uma do Rei ao Ás. Uma sequência completa de Rei a Ás em um único naipe é movida automaticamente para um dos oito quadros de fundação no topo. As cartas restantes podem ser distribuídas em grupos a partir do canto superior esquerdo.",
     "info.close": "Fechar",
+    "info.install": "Instalar a aplicação",
     "info.source": "Código no GitHub",
   };
 
@@ -257,6 +263,7 @@
     "app.name": "Spider Solitaire: Sunrise",
     "info.text": "De kaarten moeten in de tien tableau-kolommen worden gerangschikt. Het doel is om acht volledige reeksen te vormen, telkens van Heer tot Aas. Een volledige reeks van Heer tot Aas in één kleur wordt automatisch naar een van de acht funderingsvakken boven verplaatst. De overige kaarten kunnen in groepjes uit de linkerbovenhoek worden gedeeld.",
     "info.close": "Sluiten",
+    "info.install": "App installeren",
     "info.source": "Broncode op GitHub",
   };
 

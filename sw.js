@@ -1,4 +1,4 @@
-const CACHE = "spider-sunrise-v3";
+const CACHE = "spider-sunrise-v4";
 
 const ASSETS = [
   "./",
@@ -7,7 +7,6 @@ const ASSETS = [
   "./script.js",
   "./i18n.js",
   "./version.js",
-  "./manifest.json",
   "./icons/favicon.svg",
   "./icons/favicon-32.png",
   "./icons/favicon-192.png",
@@ -45,17 +44,20 @@ self.addEventListener("fetch", (event) => {
 
   event.respondWith(
     caches.open(CACHE).then(async (cache) => {
-      const cached = await cache.match(request);
-      const network = fetch(request)
-        .then((response) => {
-          if (response && response.ok) cache.put(request, response.clone());
-          return response;
-        })
-        .catch(() => {
-          if (request.mode === "navigate") return caches.match("./index.html");
-          return cached;
-        });
-      return cached || network;
+      try {
+        const init = request.mode === "navigate" ? { cache: "no-store" } : undefined;
+        const response = await fetch(request, init);
+        if (response && response.ok) cache.put(request, response.clone());
+        return response;
+      } catch (err) {
+        const cached = await cache.match(request);
+        if (cached) return cached;
+        if (request.mode === "navigate") {
+          const fallback = await cache.match("./index.html");
+          if (fallback) return fallback;
+        }
+        throw err;
+      }
     })
   );
 });

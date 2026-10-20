@@ -40,6 +40,7 @@
   let history = [];
   let uid = 1;
   let difficulty = 1;
+  let installPrompt = null;
 
   const cardEls = new Map();
   let currentPositions = new Map();
@@ -1369,6 +1370,7 @@
       "<h2>Spider Solitaire: Sunrise</h2>" +
       '<p class="about">' + t("info.text") + "</p>" +
       '<button class="btn primary big" id="btn-close-info">' + t("info.close") + "</button>" +
+      (installPrompt ? '<button class="btn big" id="btn-install">' + t("info.install") + "</button>" : "") +
       (ver ? '<div class="app-version">' + ver + "</div>" : "") +
       '<a class="src" href="https://github.com/cyberpixelsharc/spider-solitaire-sunrise" target="_blank" rel="noopener">' + t("info.source") + "</a>" +
       "</div>";
@@ -1381,6 +1383,20 @@
       if (wasRunning && state) ensureTimer();
     };
     overlay.querySelector("#btn-close-info").addEventListener("click", () => infoClose());
+    const installBtn = overlay.querySelector("#btn-install");
+    if (installBtn) {
+      installBtn.addEventListener("click", async () => {
+        const pending = installPrompt;
+        installPrompt = null;
+        installBtn.remove();
+        try {
+          await pending.prompt();
+          await pending.userChoice;
+        } catch (err) {
+          console.error("Install prompt failed:", err);
+        }
+      });
+    }
   }
 
   function showWin() {
@@ -1412,11 +1428,29 @@
     if (winAnimRaf) startWinAnim();
   });
 
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    installPrompt = e;
+  });
+
+  window.addEventListener("appinstalled", () => {
+    installPrompt = null;
+  });
+
   if ("serviceWorker" in navigator && location.protocol.indexOf("http") === 0) {
+    const hadController = !!navigator.serviceWorker.controller;
+    let reloaded = false;
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (!hadController || reloaded || state) return;
+      reloaded = true;
+      location.reload();
+    });
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("sw.js").catch((err) => {
-        console.error("Service worker registration failed:", err);
-      });
+      navigator.serviceWorker
+        .register("sw.js", { updateViaCache: "none" })
+        .catch((err) => {
+          console.error("Service worker registration failed:", err);
+        });
     });
   }
 

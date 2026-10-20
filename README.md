@@ -41,7 +41,7 @@ The goal is to build eight complete sequences, each running from **King down to 
 | Deal from stock | Click the stock pile (top-left) |
 | Undo | **Undo** button or `Ctrl/Cmd + Z` |
 | Hint | **Hint** button |
-| New game / difficulty | **New Game** button |
+| End game / new game | **Leave** button (asks for confirmation, then shows the difficulty menu) |
 
 ## Difficulty
 
@@ -133,7 +133,7 @@ Pick your browser below.
 - A standalone window without the browser UI (where the platform supports it).
 - Full offline play after the first visit (assets are cached by the service worker).
 
-To pick up updates, reload the page once while online; the service worker refreshes its cache in the background.
+While online, the app checks for updates each time it is opened and updates itself automatically once a newer version has been published.
 
 ## License
 
