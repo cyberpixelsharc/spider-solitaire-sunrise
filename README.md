@@ -37,7 +37,7 @@ The goal is to build eight complete sequences, each running from **King down to 
 
 | Action | How |
 | --- | --- |
-| Move cards | Drag and drop, or double-click for a smart auto-move |
+| Move cards | Drag and drop, or click for a smart auto-move |
 | Deal from stock | Click the stock pile (top-left) |
 | Undo | **Undo** button or `Ctrl/Cmd + Z` |
 | Hint | **Hint** button |

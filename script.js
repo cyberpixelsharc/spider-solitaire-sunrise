@@ -214,8 +214,9 @@
     const W = board.clientWidth;
     const H = board.clientHeight;
 
+    const compact = W < 700;
     const pad = Math.max(8, Math.min(18, W * 0.012));
-    const gap = Math.max(4, W * 0.007);
+    const gap = compact ? 0 : Math.max(4, W * 0.007);
     let cardW = Math.min((W - pad * 2 - gap * 9) / COLS, 124);
 
     let cardH = cardW * 1.42;
@@ -226,10 +227,10 @@
 
     for (let pass = 0; pass < 4; pass++) {
       cardH = cardW * 1.42;
-      tableTop = pad + cardH + Math.max(12, cardH * 0.18, H * 0.035);
+      tableTop = pad + cardH + Math.max(12, cardH * 0.18);
       tableH = Math.max(40, H - tableTop - pad);
 
-      const upMax = cardH * 0.2;
+      const upMax = compact ? Math.max(cardH * 0.2, cardW * 0.46) : cardH * 0.2;
       const downMax = cardH * 0.09;
 
       let need = 0;
@@ -259,12 +260,13 @@
     }
 
     cardH = cardW * 1.42;
-    tableTop = pad + cardH + Math.max(12, cardH * 0.18, H * 0.035);
+    tableTop = pad + cardH + Math.max(12, cardH * 0.18);
     tableH = Math.max(40, H - tableTop - pad);
 
     const tableW = cardW * COLS + gap * (COLS - 1);
     const offsetX = (W - tableW) / 2;
 
+    board.classList.toggle("compact", compact);
     board.style.setProperty("--cw", cardW + "px");
     board.style.setProperty("--ch", cardH + "px");
     document.documentElement.style.setProperty("--gutter", offsetX + "px");
@@ -276,6 +278,7 @@
       upOff, downOff,
       stockX: offsetX,
       stockY: pad,
+      stockOff: compact ? Math.max(1.5, cardW * 0.04) : 3,
       foundX0,
       foundY: pad,
     };
@@ -301,7 +304,7 @@
     const map = new Map();
 
     state.stock.forEach((group, di) => {
-      const off = di * 3;
+      const off = di * d.stockOff;
       group.forEach((card, gi) => {
         map.set(card.id, {
           x: d.stockX + off,
@@ -931,6 +934,8 @@
   window.addEventListener("pointerup", onPointerUp);
   window.addEventListener("pointercancel", onPointerUp);
 
+  let lastTapMove = 0;
+
   function onPointerDown(e) {
     if (dealing || autoPlaying || !state || overlay.classList.contains("show")) return;
     if (e.button !== undefined && e.button !== 0) return;
@@ -998,7 +1003,13 @@
       el.classList.remove("lift");
     });
 
-    if (!d.active) return;
+    if (!d.active) {
+      const now = performance.now();
+      if (now - lastTapMove < 280) return;
+      lastTapMove = now;
+      autoMove(d.col, d.index);
+      return;
+    }
 
     const leader = d.group[0];
     const o = currentPositions.get(leader.id);
@@ -1012,17 +1023,6 @@
     }
     performMove(d.col, d.index, target);
   }
-
-  cardsLayer.addEventListener("dblclick", (e) => {
-    if (dealing || autoPlaying || !state) return;
-    const el = e.target.closest(".card");
-    if (!el) return;
-    const loc = findLocation(Number(el.dataset.id));
-    if (!loc || loc.type !== "column") return;
-    const col = state.columns[loc.col];
-    if (!col[loc.index].faceUp || !isRun(col, loc.index)) return;
-    autoMove(loc.col, loc.index);
-  });
 
   stockSlot.addEventListener("pointerdown", () => {
     if (!state || dealing || autoPlaying || !state.stock.length) return;
