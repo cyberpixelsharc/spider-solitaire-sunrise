@@ -41,6 +41,12 @@
   let uid = 1;
   let difficulty = 1;
   let installPrompt = null;
+  let assist = false;
+  try {
+    assist = localStorage.getItem("spider-sunrise-assist") === "1";
+  } catch (err) {
+    assist = false;
+  }
 
   const cardEls = new Map();
   let currentPositions = new Map();
@@ -283,6 +289,7 @@
       foundY: pad,
     };
 
+    applyAssist();
     layoutSlots();
   }
 
@@ -443,6 +450,17 @@
         el._moveEnd = null;
       }, 320);
     }, delay);
+  }
+
+  function applyAssist() {
+    if (!state) return;
+    state.columns.forEach((col) => {
+      col.forEach((card, i) => {
+        const el = cardEls.get(card.id);
+        if (!el) return;
+        el.classList.toggle("dim", assist && card.faceUp && !isRun(col, i));
+      });
+    });
   }
 
   function isRun(col, i) {
@@ -1392,6 +1410,9 @@
       '<img src="icons/favicon.svg" class="modal-logo" alt="" width="68" height="68" />' +
       "<h2>Spider Solitaire: Sunrise</h2>" +
       '<p class="about">' + t("info.text") + "</p>" +
+      '<label class="opt"><span class="opt-label">' + t("info.assist") + "</span>" +
+      '<span class="switch"><input type="checkbox" id="assist-toggle"' + (assist ? " checked" : "") +
+      ' /><span class="track"></span></span></label>' +
       '<button class="btn primary big" id="btn-close-info">' + t("info.close") + "</button>" +
       (installPrompt ? '<button class="btn big" id="btn-install">' + t("info.install") + "</button>" : "") +
       (ver ? '<div class="app-version">' + ver + "</div>" : "") +
@@ -1406,6 +1427,13 @@
       if (wasRunning && state) ensureTimer();
     };
     overlay.querySelector("#btn-close-info").addEventListener("click", () => infoClose());
+    overlay.querySelector("#assist-toggle").addEventListener("change", (e) => {
+      assist = e.target.checked;
+      try {
+        localStorage.setItem("spider-sunrise-assist", assist ? "1" : "0");
+      } catch (err) {}
+      applyAssist();
+    });
     const installBtn = overlay.querySelector("#btn-install");
     if (installBtn) {
       installBtn.addEventListener("click", async () => {

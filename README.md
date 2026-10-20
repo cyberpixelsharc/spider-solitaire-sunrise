@@ -60,6 +60,13 @@ Choose a difficulty from the start menu:
 - Each completed sequence grants **+100 points**.
 - A timer and a move counter are shown in the top bar.
 
+## Assistance
+
+An optional game aid can dim the cards you cannot move. Open the info dialog by clicking the spider logo in the top-left corner and turn on **Dim cards that cannot be moved**.
+
+- A card can only be lifted together with the cards below it if they form a descending run in the same suit. Cards in the tableau that cannot be lifted this way are darkened slightly.
+- The setting is stored in the browser and applies to current and future games. It is off by default.
+
 ## Languages
 
 The UI detects the browser language on load and falls back to English:
