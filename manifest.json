@@ -10,7 +10,7 @@
   "display": "standalone",
   "orientation": "any",
   "background_color": "#123027",
-  "theme_color": "#0b2b22",
+  "theme_color": "#15372b",
   "categories": ["games", "entertainment"],
   "icons": [
     {

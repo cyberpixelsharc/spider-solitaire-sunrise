@@ -37,6 +37,10 @@ The goal is to build eight complete sequences, each running from **King down to 
 - Clear eight complete K–A single-suit sequences to win.
 - After the stock is empty and no face-down cards remain, the game can auto-finish solvable positions for you.
 
+### Saving your game
+
+Your game is saved automatically and restored when you reopen the app — the start menu then shows **Continue**. The last chosen difficulty is remembered too. Confirming **Leave** discards the saved game.
+
 ## Controls
 
 | Action | How |
@@ -46,6 +50,7 @@ The goal is to build eight complete sequences, each running from **King down to 
 | Undo | **Undo** button or `Ctrl/Cmd + Z` |
 | Hint | **Hint** button |
 | End game / new game | **Leave** button (asks for confirmation, then shows the difficulty menu) |
+| Zoom | Pinch to zoom in and out; double-tap the table area to fit the board to the screen again |
 
 ## Difficulty
 

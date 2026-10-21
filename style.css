@@ -36,7 +36,7 @@ body {
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
-  touch-action: pan-y;
+  touch-action: manipulation;
 }
 
 body::after {
@@ -125,7 +125,15 @@ body.menu-open #board {
 }
 
 .brand h1 {
-  display: none;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
   font-size: 16px;
   font-weight: 600;
   letter-spacing: 0.3px;
@@ -264,6 +272,12 @@ body.menu-open #board {
 }
 
 /* ---------- Cards ---------- */
+.topbar,
+.slot,
+.overlay {
+  touch-action: manipulation;
+}
+
 .card {
   position: absolute;
   touch-action: none;
@@ -530,6 +544,10 @@ body.menu-open #board {
   gap: 10px;
 }
 
+.modal .btn.big + .difficulty {
+  margin-top: 18px;
+}
+
 .modal-actions .btn {
   flex: 1 1 auto;
   padding: 12px 16px;
@@ -782,14 +800,14 @@ body.menu-open #board {
   }
 
   .modal {
-    padding: 16px;
+    padding: 14px 16px;
     border-radius: 14px;
   }
 
   .modal-logo {
-    width: 44px;
-    height: 44px;
-    margin-bottom: 10px;
+    width: 38px;
+    height: 38px;
+    margin-bottom: 8px;
   }
 
   .modal h2 {
@@ -848,5 +866,15 @@ body.menu-open #board {
 
   .result > div {
     padding: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
   }
 }

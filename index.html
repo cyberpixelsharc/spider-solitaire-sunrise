@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Spider Solitaire: Sunrise</title>
   <meta name="description" content="Classic Spider Solitaire as a lightweight offline web app." />
   <meta name="theme-color" content="#0b2b22" />
@@ -10,7 +10,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Spider Sunrise" />
-  <link rel="manifest" href="manifest.json?v=1.0.2" />
+  <link rel="manifest" href="manifest.json?v=1.0.8" />
   <link rel="icon" type="image/svg+xml" href="icons/favicon.svg" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/favicon-192.png" />
   <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png" />
@@ -46,7 +46,7 @@
   </main>
 
   <div class="overlay" id="overlay"></div>
-  <div class="toast" id="toast"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="i18n.js"></script>
   <script src="version.js"></script>

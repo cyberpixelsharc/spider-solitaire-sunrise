@@ -40,8 +40,17 @@
   let history = [];
   let uid = 1;
   let difficulty = 1;
+  try {
+    const savedDiff = Number(localStorage.getItem("spider-sunrise-difficulty"));
+    if (savedDiff === 2 || savedDiff === 4) difficulty = savedDiff;
+  } catch (err) {}
   let installPrompt = null;
   let assist = false;
+  let lastDealAt = 0;
+  let collectToken = 0;
+  let resizeRaf = 0;
+  let saveTimer = null;
+  const SAVE_KEY = "spider-sunrise-game";
   try {
     assist = localStorage.getItem("spider-sunrise-assist") === "1";
   } catch (err) {
@@ -120,6 +129,7 @@
     difficulty = numSuits;
     uid = 1;
     history = [];
+    collectToken++;
     autoPlaying = false;
     autoFinishTried = false;
     autoPlan = null;
@@ -213,6 +223,148 @@
   }
 
   /* ---------------------------------------------------------------
+     Save / restore
+  --------------------------------------------------------------- */
+  function serializeCard(card) {
+    return { s: card.suit, r: card.rank, i: card.id, u: card.faceUp ? 1 : 0 };
+  }
+
+  function saveGame() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(writeSave, 200);
+  }
+
+  function writeSave() {
+    if (!state || state.foundations.length >= FOUND_SLOTS) return;
+    try {
+      localStorage.setItem(
+        SAVE_KEY,
+        JSON.stringify({
+          v: 1,
+          d: difficulty,
+          m: state.moves,
+          sc: state.score,
+          t: timerRunning ? Date.now() - startStamp : elapsed,
+          u: uid,
+          c: state.columns.map((col) => col.map(serializeCard)),
+          st: state.stock.map((group) => group.map(serializeCard)),
+          f: state.foundations.map((run) => run.map(serializeCard)),
+        })
+      );
+    } catch (err) {}
+  }
+
+  function clearSave() {
+    clearTimeout(saveTimer);
+    try {
+      localStorage.removeItem(SAVE_KEY);
+    } catch (err) {}
+  }
+
+  function readSave() {
+    let raw;
+    try {
+      raw = localStorage.getItem(SAVE_KEY);
+    } catch (err) {
+      return null;
+    }
+    if (!raw) return null;
+    let d;
+    try {
+      d = JSON.parse(raw);
+    } catch (err) {
+      return null;
+    }
+    if (!d || d.v !== 1) return null;
+    const lists = [d.c, d.st, d.f];
+    if (!Array.isArray(d.c) || d.c.length !== COLS) return null;
+    if (!Array.isArray(d.st) || !Array.isArray(d.f)) return null;
+    if (d.f.length > FOUND_SLOTS) return null;
+    const ok = (c) =>
+      c && typeof c.i === "number" && SUITS[c.s] && typeof c.r === "number" && c.r >= 1 && c.r <= 13;
+    for (const list of lists) {
+      if (!Array.isArray(list)) return null;
+      for (const sub of list) {
+        if (!Array.isArray(sub) || !sub.every(ok)) return null;
+      }
+    }
+    const ids = new Set();
+    let total = 0;
+    for (const list of lists) {
+      for (const sub of list) {
+        for (const c of sub) {
+          ids.add(c.i);
+          total++;
+        }
+      }
+    }
+    if (total !== 104 || ids.size !== 104) return null;
+    return d;
+  }
+
+  function restoreGame(d) {
+    clearTimeout(saveTimer);
+    const mk = (c) => ({ suit: c.s, rank: c.r, id: c.i, faceUp: !!c.u });
+    const columns = d.c.map((col) => col.map(mk));
+    const stock = d.st.map((group) => group.map(mk));
+    const foundations = d.f.map((run) => run.map(mk));
+
+    difficulty = d.d === 2 || d.d === 4 ? d.d : 1;
+    history = [];
+    collectToken++;
+    dealing = false;
+    autoPlaying = false;
+    autoFinishTried = false;
+    autoPlan = null;
+    autoPlanIndex = 0;
+    stopWinAnim();
+    document.body.classList.remove("auto");
+    document.body.classList.remove("overlay-open");
+    document.body.classList.remove("menu-open");
+
+    const all = [];
+    columns.forEach((col) => all.push(...col));
+    stock.forEach((group) => all.push(...group));
+    foundations.forEach((run) => all.push(...run));
+    uid = (typeof d.u === "number" && d.u > 0 ? d.u : 0) + 1;
+    all.forEach((card) => {
+      uid = Math.max(uid, card.id + 1);
+    });
+
+    state = {
+      columns,
+      stock,
+      foundations,
+      moves: d.m | 0,
+      score: d.sc | 0,
+    };
+
+    cardEls.clear();
+    cardsLayer.innerHTML = "";
+    currentPositions = new Map();
+    all.forEach((card) => {
+      const el = document.createElement("div");
+      el.className = "card";
+      el.dataset.id = card.id;
+      el.style.transition = "none";
+      el.innerHTML = cardFaceHTML(card);
+      cardsLayer.appendChild(el);
+      cardEls.set(card.id, el);
+    });
+
+    elapsed = typeof d.t === "number" && d.t > 0 ? d.t : 0;
+    updateTime();
+    updateStats();
+    measure();
+    render();
+    void cardsLayer.offsetWidth;
+    cardEls.forEach((el) => {
+      el.style.transition = "";
+    });
+    ensureTimer();
+  }
+
+  /* ---------------------------------------------------------------
      Layout
   --------------------------------------------------------------- */
   function measure() {
@@ -261,8 +413,8 @@
         }
         actual = Math.max(actual, t);
       });
-      if (actual <= tableH || cardW <= 56) break;
-      cardW = Math.max(56, cardW * Math.min(0.97, tableH / actual));
+      if (actual <= tableH || cardW <= 40) break;
+      cardW = Math.max(40, cardW * Math.min(0.97, tableH / actual));
     }
 
     cardH = cardW * 1.42;
@@ -430,6 +582,7 @@
       }, 1300);
     }
     layoutSlots();
+    saveGame();
   }
 
   /* ---------------------------------------------------------------
@@ -530,6 +683,8 @@
 
   function dealStock() {
     if (dealing) return;
+    if (performance.now() - lastDealAt < 250) return;
+    lastDealAt = performance.now();
     if (!state.stock.length) {
       toast(t("toast.noStock"));
       return;
@@ -647,7 +802,9 @@
     render({ elevate: elevated, deal });
     updateStats();
 
+    const token = ++collectToken;
     setTimeout(() => {
+      if (token !== collectToken) return;
       const collected = [];
       for (const col of state.columns) {
         let run;
@@ -870,6 +1027,7 @@
       toast(t("toast.nothingUndo"));
       return;
     }
+    collectToken++;
     const prev = currentPositions;
     const h = history.pop();
     state = {
@@ -956,6 +1114,7 @@
 
   function onPointerDown(e) {
     if (dealing || autoPlaying || !state || overlay.classList.contains("show")) return;
+    if (drag) return;
     if (e.button !== undefined && e.button !== 0) return;
 
     const el = e.target.closest(".card");
@@ -1048,11 +1207,21 @@
     dealStock();
   });
 
-  window.addEventListener("resize", () => {
-    if (!state) return;
-    measure();
-    render();
-  });
+  function scheduleLayout() {
+    if (!state || resizeRaf) return;
+    resizeRaf = requestAnimationFrame(() => {
+      resizeRaf = 0;
+      if (!state) return;
+      measure();
+      render();
+    });
+  }
+
+  window.addEventListener("resize", scheduleLayout);
+
+  if (window.ResizeObserver) {
+    new ResizeObserver(scheduleLayout).observe(board);
+  }
 
   window.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && (infoClose || leaveConfirmClose)) {
@@ -1334,13 +1503,16 @@
 
   function showMenu() {
     stopWinAnim();
+    autoStop();
     stopTimer();
     const ver = appVersionLine();
+    const save = readSave();
     overlay.innerHTML =
       '<div class="modal">' +
       '<img src="icons/favicon.svg" class="modal-logo" alt="" width="68" height="68" />' +
       "<h2>Spider Solitaire: Sunrise</h2>" +
       '<p class="sub">' + t("menu.subtitle") + "</p>" +
+      (save ? '<button class="btn primary big" id="btn-continue">' + t("menu.continue") + "</button>" : "") +
       '<div class="difficulty">' +
       '<button class="diff' + (difficulty === 1 ? " selected" : "") + '" data-suits="1" title="' + t("menu.oneSuit") + '" aria-label="' + t("menu.oneSuit") + " · " + t("menu.easy") + '"><strong class="suits">' + suitIcons(["S"]) + "</strong><span>" + t("menu.easy") + "</span></button>" +
       '<button class="diff' + (difficulty === 2 ? " selected" : "") + '" data-suits="2" title="' + t("menu.twoSuits") + '" aria-label="' + t("menu.twoSuits") + " · " + t("menu.medium") + '"><strong class="suits">' + suitIcons(["S", "H"]) + "</strong><span>" + t("menu.medium") + "</span></button>" +
@@ -1356,9 +1528,22 @@
     overlay.querySelectorAll(".diff").forEach((b) => {
       b.addEventListener("click", () => {
         difficulty = Number(b.dataset.suits);
+        try {
+          localStorage.setItem("spider-sunrise-difficulty", String(difficulty));
+        } catch (err) {}
         overlay.querySelectorAll(".diff").forEach((x) => x.classList.toggle("selected", x === b));
       });
     });
+
+    const continueBtn = overlay.querySelector("#btn-continue");
+    if (continueBtn) {
+      continueBtn.addEventListener("click", () => {
+        const saved = readSave();
+        if (!saved) return;
+        overlay.classList.remove("show");
+        restoreGame(saved);
+      });
+    }
 
     overlay.querySelector("#btn-start").addEventListener("click", () => {
       overlay.classList.remove("show");
@@ -1395,6 +1580,10 @@
     });
     overlay.querySelector("#btn-confirm-leave").addEventListener("click", () => {
       leaveConfirmClose = null;
+      clearSave();
+      state = null;
+      history = [];
+      elapsed = 0;
       overlay.classList.remove("show");
       document.body.classList.remove("overlay-open");
       showMenu();
@@ -1452,6 +1641,7 @@
 
   function showWin() {
     stopTimer();
+    clearSave();
     const ver = appVersionLine();
     overlay.innerHTML =
       '<div class="win-cards"></div>' +
@@ -1488,6 +1678,11 @@
     installPrompt = null;
   });
 
+  window.addEventListener("pagehide", writeSave);
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) writeSave();
+  });
+
   if ("serviceWorker" in navigator && location.protocol.indexOf("http") === 0) {
     const hadController = !!navigator.serviceWorker.controller;
     let reloaded = false;
@@ -1505,5 +1700,55 @@
     });
   }
 
-  showMenu();
+  let lastBgTap = 0;
+  let lastBgTapX = 0;
+  let lastBgTapY = 0;
+
+  function resetZoom() {
+    const vv = window.visualViewport;
+    if (!vv || vv.scale <= 1.05) return;
+    writeSave();
+    try {
+      sessionStorage.setItem("spider-sunrise-resume", "1");
+    } catch (err) {}
+    try {
+      const url = new URL(location.href);
+      url.searchParams.set("z", Date.now().toString(36));
+      location.replace(url.href);
+    } catch (err) {
+      location.reload();
+    }
+  }
+
+  try {
+    const url = new URL(location.href);
+    if (url.searchParams.has("z")) {
+      url.searchParams.delete("z");
+      window.history.replaceState(null, "", url.href);
+    }
+  } catch (err) {}
+
+  board.addEventListener("pointerup", (e) => {
+    if (!state || overlay.classList.contains("show")) return;
+    if (e.button !== undefined && e.button !== 0) return;
+    if (e.target.closest(".card, .slot")) return;
+    const now = performance.now();
+    if (now - lastBgTap < 360 && Math.hypot(e.clientX - lastBgTapX, e.clientY - lastBgTapY) < 40) {
+      lastBgTap = 0;
+      resetZoom();
+    } else {
+      lastBgTap = now;
+      lastBgTapX = e.clientX;
+      lastBgTapY = e.clientY;
+    }
+  });
+
+  let autoResume = false;
+  try {
+    autoResume = sessionStorage.getItem("spider-sunrise-resume") === "1";
+    sessionStorage.removeItem("spider-sunrise-resume");
+  } catch (err) {}
+  const resumeSave = autoResume ? readSave() : null;
+  if (resumeSave) restoreGame(resumeSave);
+  else showMenu();
 })();
