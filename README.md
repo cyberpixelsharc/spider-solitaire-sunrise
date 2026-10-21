@@ -51,6 +51,7 @@ Your game is saved automatically and restored when you reopen the app — the st
 | Hint | **Hint** button |
 | End game / new game | **Leave** button (asks for confirmation, then shows the difficulty menu) |
 | Zoom | Pinch to zoom in and out; double-tap the table area to fit the board to the screen again |
+| Long columns | Swipe up or down on the table background or on cards that cannot be moved — tall stacks scroll instead of being squashed |
 
 ## Difficulty
 

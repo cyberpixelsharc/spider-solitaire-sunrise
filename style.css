@@ -243,7 +243,20 @@ body.menu-open #board {
 #board {
   position: relative;
   flex: 1 1 auto;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-width: none;
+}
+
+#board::-webkit-scrollbar {
+  display: none;
+}
+
+#board::after {
+  content: "";
+  display: block;
+  height: var(--scroll-h, 0px);
 }
 
 #slots,
@@ -278,9 +291,18 @@ body.menu-open #board {
   touch-action: manipulation;
 }
 
+.card.down,
+.card.lock {
+  touch-action: manipulation;
+}
+
+#board.zoomed .card {
+  touch-action: manipulation;
+}
+
 .card {
   position: absolute;
-  touch-action: none;
+  touch-action: pinch-zoom;
   left: 0;
   top: 0;
   width: var(--cw, 80px);

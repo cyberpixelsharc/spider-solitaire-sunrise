@@ -141,6 +141,7 @@
     cardEls.clear();
     cardsLayer.innerHTML = "";
     currentPositions = new Map();
+    board.scrollTop = 0;
     dealing = true;
 
     const deck = shuffle(buildDeck(numSuits));
@@ -342,6 +343,7 @@
     cardEls.clear();
     cardsLayer.innerHTML = "";
     currentPositions = new Map();
+    board.scrollTop = 0;
     all.forEach((card) => {
       const el = document.createElement("div");
       el.className = "card";
@@ -376,57 +378,50 @@
     const pad = Math.max(8, Math.min(18, W * 0.012));
     const gap = compact ? 0 : Math.max(4, W * 0.007);
     let cardW = Math.min((W - pad * 2 - gap * 9) / COLS, 124);
-
     let cardH = cardW * 1.42;
-    let tableTop = 0;
-    let tableH = 0;
-    let upOff = 0;
-    let downOff = 0;
+    let tableTop = pad + cardH + Math.max(12, cardH * 0.18);
 
-    for (let pass = 0; pass < 4; pass++) {
+    let guard = 0;
+    while (tableTop + cardH + pad > H && cardW > 40 && guard++ < 8) {
+      cardW = Math.max(40, cardW * 0.9);
       cardH = cardW * 1.42;
       tableTop = pad + cardH + Math.max(12, cardH * 0.18);
-      tableH = Math.max(40, H - tableTop - pad);
-
-      const upMax = compact ? Math.max(cardH * 0.2, cardW * 0.46) : cardH * 0.2;
-      const downMax = cardH * 0.09;
-
-      let need = 0;
-      state.columns.forEach((col) => {
-        let t = cardH;
-        for (let i = 0; i < col.length - 1; i++) {
-          t += col[i].faceUp ? upMax : downMax;
-        }
-        need = Math.max(need, t);
-      });
-      const offMax = need - cardH;
-      const offAvail = tableH - cardH;
-      const k = offMax > offAvail && offMax > 0 ? Math.max(0, offAvail / offMax) : 1;
-      upOff = Math.max(2, upMax * k);
-      downOff = Math.max(1.5, downMax * k);
-
-      let actual = 0;
-      state.columns.forEach((col) => {
-        let t = cardH;
-        for (let i = 0; i < col.length - 1; i++) {
-          t += col[i].faceUp ? upOff : downOff;
-        }
-        actual = Math.max(actual, t);
-      });
-      if (actual <= tableH || cardW <= 40) break;
-      cardW = Math.max(40, cardW * Math.min(0.97, tableH / actual));
     }
 
-    cardH = cardW * 1.42;
-    tableTop = pad + cardH + Math.max(12, cardH * 0.18);
-    tableH = Math.max(40, H - tableTop - pad);
+    const tableH = Math.max(40, H - tableTop - pad);
+    const upMax = compact ? Math.max(cardH * 0.2, cardW * 0.46) : cardH * 0.2;
+    const downMax = cardH * 0.09;
+    const minUp = cardW * (compact ? 0.32 : 0.23);
+
+    let need = 0;
+    state.columns.forEach((col) => {
+      let t = cardH;
+      for (let i = 0; i < col.length - 1; i++) {
+        t += col[i].faceUp ? upMax : downMax;
+      }
+      need = Math.max(need, t);
+    });
+    const offMax = need - cardH;
+    const offAvail = tableH - cardH;
+    const k = offMax > offAvail && offMax > 0 ? Math.max(0, offAvail / offMax) : 1;
+    const upOff = Math.max(minUp, upMax * k);
+    const downOff = Math.max(3, cardH * 0.06, downMax * k);
+
+    let actual = 0;
+    state.columns.forEach((col) => {
+      let t = cardH;
+      for (let i = 0; i < col.length - 1; i++) {
+        t += col[i].faceUp ? upOff : downOff;
+      }
+      actual = Math.max(actual, t);
+    });
 
     const tableW = cardW * COLS + gap * (COLS - 1);
     const offsetX = (W - tableW) / 2;
-
     board.classList.toggle("compact", compact);
     board.style.setProperty("--cw", cardW + "px");
     board.style.setProperty("--ch", cardH + "px");
+    board.style.setProperty("--scroll-h", tableTop + actual + pad + "px");
     document.documentElement.style.setProperty("--gutter", offsetX + "px");
 
     const foundX0 = offsetX + 2 * (cardW + gap);
@@ -588,6 +583,15 @@
   /* ---------------------------------------------------------------
      Helpers
   --------------------------------------------------------------- */
+  function isZoomed() {
+    const vv = window.visualViewport;
+    return !!vv && vv.scale > 1.05;
+  }
+
+  function syncZoomClass() {
+    board.classList.toggle("zoomed", isZoomed());
+  }
+
   function parseXY(t) {
     const m = /translate3d\((-?[\d.]+)px,\s*(-?[\d.]+)px/.exec(t || "");
     return m ? { x: parseFloat(m[1]), y: parseFloat(m[2]) } : null;
@@ -612,6 +616,7 @@
         const el = cardEls.get(card.id);
         if (!el) return;
         el.classList.toggle("dim", assist && card.faceUp && !isRun(col, i));
+        el.classList.toggle("lock", card.faceUp && !isRun(col, i));
       });
     });
   }
@@ -1108,7 +1113,16 @@
   cardsLayer.addEventListener("pointerdown", onPointerDown);
   window.addEventListener("pointermove", onPointerMove);
   window.addEventListener("pointerup", onPointerUp);
-  window.addEventListener("pointercancel", onPointerUp);
+  window.addEventListener("pointercancel", () => {
+    if (!drag) return;
+    drag.group.forEach((c) => {
+      const el = cardEls.get(c.id);
+      if (el) el.classList.remove("lift");
+    });
+    drag = null;
+    document.body.classList.remove("dragging");
+    if (state) render();
+  });
 
   let lastTapMove = 0;
 
@@ -1141,12 +1155,13 @@
       startX: e.clientX,
       startY: e.clientY,
       active: false,
+      tapOnly: isZoomed(),
     };
-    e.preventDefault();
+    if (!drag.tapOnly) e.preventDefault();
   }
 
   function onPointerMove(e) {
-    if (!drag) return;
+    if (!drag || drag.tapOnly) return;
     const dx = e.clientX - drag.startX;
     const dy = e.clientY - drag.startY;
 
@@ -1678,6 +1693,12 @@
     installPrompt = null;
   });
 
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", syncZoomClass);
+    window.visualViewport.addEventListener("scroll", syncZoomClass);
+  }
+  syncZoomClass();
+
   window.addEventListener("pagehide", writeSave);
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) writeSave();
@@ -1716,17 +1737,19 @@
 
   function resetZoom() {
     const vv = window.visualViewport;
-    if (!vv || vv.scale <= 1.05) return;
+    if (vv && vv.scale > 1.05) {
     writeSave();
     try {
       sessionStorage.setItem("spider-sunrise-resume", "1");
     } catch (err) {}
-    try {
-      const url = new URL(location.href);
-      url.searchParams.set("z", Date.now().toString(36));
-      location.replace(url.href);
-    } catch (err) {
-      location.reload();
+      try {
+        const url = new URL(location.href);
+        url.searchParams.set("z", Date.now().toString(36));
+        location.replace(url.href);
+      } catch (err) {
+        location.reload();
+      }
+      return;
     }
   }
 
