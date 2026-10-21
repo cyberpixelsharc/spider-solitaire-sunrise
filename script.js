@@ -1686,10 +1686,20 @@
   if ("serviceWorker" in navigator && location.protocol.indexOf("http") === 0) {
     const hadController = !!navigator.serviceWorker.controller;
     let reloaded = false;
-    navigator.serviceWorker.addEventListener("controllerchange", () => {
+    const pageIsStale = async () => {
+      try {
+        const res = await fetch("version.js?t=" + Date.now(), { cache: "no-store" });
+        if (!res.ok) return false;
+        const match = /version:\s*"([^"]+)"/.exec(await res.text());
+        return !!match && match[1] !== APP.version;
+      } catch (err) {
+        return false;
+      }
+    };
+    navigator.serviceWorker.addEventListener("controllerchange", async () => {
       if (!hadController || reloaded || state) return;
       reloaded = true;
-      location.reload();
+      if (await pageIsStale()) location.reload();
     });
     window.addEventListener("load", () => {
       navigator.serviceWorker

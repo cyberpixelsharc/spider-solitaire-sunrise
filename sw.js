@@ -1,4 +1,4 @@
-const CACHE = "spider-sunrise-v10";
+const CACHE = "spider-sunrise-v11";
 
 const ASSETS = [
   "./",
@@ -47,7 +47,9 @@ self.addEventListener("fetch", (event) => {
       try {
         const init = request.mode === "navigate" ? { cache: "no-store" } : undefined;
         const response = await fetch(request, init);
-        if (response && response.ok) cache.put(request, response.clone());
+        if (response && response.ok && !url.searchParams.has("t")) {
+          cache.put(request, response.clone());
+        }
         return response;
       } catch (err) {
         const cached = await cache.match(request);

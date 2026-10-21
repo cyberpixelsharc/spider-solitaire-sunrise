@@ -149,7 +149,7 @@ Pick your browser below.
 - A standalone window without the browser UI (where the platform supports it).
 - Full offline play after the first visit (assets are cached by the service worker).
 
-While online, the app checks for updates each time it is opened and updates itself automatically once a newer version has been published.
+While online, the app checks for updates each time it is opened and updates itself automatically once a newer version has been published. It only reloads when the running page is actually outdated, so an already updated app opens without a second flash.
 
 ## License
 
