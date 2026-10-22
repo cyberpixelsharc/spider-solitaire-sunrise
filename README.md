@@ -2,7 +2,9 @@
 
 <h1 align="center">Spider Solitaire: Sunrise</h1>
 
-<p align="center">A classic Spider Solitaire built as a pure HTML/CSS/Vanilla-JS app — no build step, no dependencies. Just open `index.html` in a browser.</p>
+<p align="center">A classic Spider Solitaire built as a pure HTML/CSS/Vanilla-JS app — no build step, no dependencies. Just open <code>index.html</code> in a browser.</p>
+
+<p align="center">The name “Spider” is derived from the eight foundation piles (sequences) that must be formed by the end of the game, which visually resemble the eight legs of a spider.</p>
 
 <p align="center">The cards must be sorted in the ten tableau columns. The goal is to build eight complete sequences, each running from King down to Ace. A complete King-to-Ace sequence in a single suit is moved automatically to one of the eight foundation frames at the top. The remaining cards can be dealt in batches from the top-left corner.</p>
 
@@ -15,6 +17,14 @@
 | Info dialog | Win screen |
 | --- | --- |
 | ![Info dialog](screenshots/info.jpg) | ![Win screen](screenshots/win.jpg) |
+
+## History
+
+While the broader category of solitaire- or patience-games has its roots in late 18th-century Europe (likely Germany or Scandinavia), the specific variant known as “Spider Solitaire” is a 20th-century creation from the United States. The precise geographical origin is not fully documented in historical records.
+
+The earliest evidence is considered to be a 1917 book by the renowned American bridge expert Ely Culbertson (*Culbertson's Card Game Complete with Official Rules*), in which the variant and its rules were recorded in writing for the first time.
+
+The game only gained worldwide recognition in the late 1990s, thanks to Microsoft. It was first included in the Plus! 98 expansion pack for Windows 98, and from Windows ME and Windows XP onwards, it became a standard feature of the operating system.
 
 ## How to play
 
