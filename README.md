@@ -8,24 +8,24 @@
 
 <p align="center">The cards must be sorted in the ten tableau columns. The goal is to build eight complete sequences, each running from King down to Ace. A complete King-to-Ace sequence in a single suit is moved automatically to one of the eight foundation frames at the top. The remaining cards can be dealt in batches from the top-left corner.</p>
 
-<p align="center">The UI is multilingual (11 languages) and automatically picks your browser language. English is the main/fallback language; German, French, Spanish, Italian, Portuguese, Dutch, Polish, Turkish, Swedish and Czech are also included.</p>
+<p align="center">The UI is multilingual (11 languages) and automatically picks your browser language. English is the main/fallback language — German, French, Spanish, Italian, Portuguese, Dutch, Polish, Turkish, Swedish and Czech are also included.</p>
 
 <table>
   <tr>
-    <td align="center"><strong>Start menu</strong></td>
-    <td align="center"><strong>Game in progress</strong></td>
+    <td align="center" width="50%"><strong>Start menu</strong></td>
+    <td align="center" width="50%"><strong>Game in progress</strong></td>
   </tr>
   <tr>
-    <td><img src="screenshots/menu.jpg" alt="Start menu"></td>
-    <td><img src="screenshots/game.jpg" alt="Game in progress"></td>
+    <td width="50%"><img src="screenshots/menu.jpg" alt="Start menu"></td>
+    <td width="50%"><img src="screenshots/game.jpg" alt="Game in progress"></td>
   </tr>
   <tr>
-    <td align="center"><strong>Info dialog</strong></td>
-    <td align="center"><strong>Win screen</strong></td>
+    <td align="center" width="50%"><strong>Info dialog</strong></td>
+    <td align="center" width="50%"><strong>Win screen</strong></td>
   </tr>
   <tr>
-    <td><img src="screenshots/info.jpg" alt="Info dialog"></td>
-    <td><img src="screenshots/win.jpg" alt="Win screen"></td>
+    <td width="50%"><img src="screenshots/info.jpg" alt="Info dialog"></td>
+    <td width="50%"><img src="screenshots/win.jpg" alt="Win screen"></td>
   </tr>
 </table>
 
@@ -43,7 +43,7 @@ The goal is to build eight complete sequences, each running from **King down to 
 
 ### Setup
 - 8 x 13 cards are shuffled and dealt into **10 tableau columns**.
-- Each column starts with face-down cards; only the top card is face-up.
+- Each column starts with face-down cards — only the top card is face-up.
 - The remaining cards form a **stock** in the top-left corner (5 deals of 10 cards).
 
 ### Moving cards
@@ -73,7 +73,7 @@ Your game is saved automatically and restored when you reopen the app — the st
 | Undo | **Undo** button or `Ctrl/Cmd + Z` |
 | Hint | **Hint** button |
 | End game / new game | **Leave** button (asks for confirmation, then shows the difficulty menu) |
-| Zoom | Pinch to zoom in and out; double-tap the table area to fit the board to the screen again |
+| Zoom | Pinch to zoom in and out — double-tap the table area to fit the board to the screen again |
 | Long columns | Swipe up or down on the table background or on cards that cannot be moved — tall stacks scroll instead of being squashed |
 
 ## Difficulty
@@ -124,9 +124,9 @@ The UI detects the browser language on load and falls back to English:
 - Swedish (`sv`)
 - Czech (`cs`)
 
-Card ranks are shown as A/J/Q/K by default; the info dialog can switch them to the letters common in your language (for example B/D/K in German, V/D/R in French, W/D/K in Polish, Kn/D/K in Swedish).
+Card ranks are shown as A/J/Q/K by default — the info dialog can switch them to the letters common in your language (for example B/D/K in German, V/D/R in French, W/D/K in Polish, Kn/D/K in Swedish).
 
-Texts are stored in `i18n.js` (no libraries). Add a new language by extending the dictionary object there; missing keys automatically fall back to English.
+Texts are stored in `i18n.js` (no libraries). Add a new language by extending the dictionary object there — missing keys automatically fall back to English.
 
 ## Files
 
@@ -148,7 +148,7 @@ Open `index.html` directly in a browser (double-click or `file://`). No server o
 
 The game is a Progressive Web App: it has a manifest, app icons and a service worker, so browsers can install it as a standalone app icon and it keeps working **offline** afterwards.
 
-Just open the game at [cyberpixelsharc.github.io/spider-solitaire-sunrise](https://cyberpixelsharc.github.io/spider-solitaire-sunrise/) and use your browser's install option below. The browser steps work the same on a phone and on a computer; nothing is typed.
+Just open the game at [cyberpixelsharc.github.io/spider-solitaire-sunrise](https://cyberpixelsharc.github.io/spider-solitaire-sunrise/) and use your browser's install option below. The browser steps work the same on a phone and on a computer — nothing is typed.
 
 Pick your browser below.
 
@@ -179,7 +179,7 @@ Pick your browser below.
 ### Firefox
 
 - **Desktop:** Firefox does not install PWAs as standalone apps. Use Chrome/Edge for that, or drag the page to your desktop/bookmarks as a shortcut.
-- **Android:** Firefox removed PWA install support; use **Add to Home screen** for a bookmark shortcut, or install via Chrome instead.
+- **Android:** Firefox removed PWA install support – use **Add to Home screen** for a bookmark shortcut, or install via Chrome instead.
 
 ### What you get
 
