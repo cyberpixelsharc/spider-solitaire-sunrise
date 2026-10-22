@@ -8,13 +8,26 @@
 
 <p align="center">The cards must be sorted in the ten tableau columns. The goal is to build eight complete sequences, each running from King down to Ace. A complete King-to-Ace sequence in a single suit is moved automatically to one of the eight foundation frames at the top. The remaining cards can be dealt in batches from the top-left corner.</p>
 
-<p align="center">The UI is multilingual and automatically picks your browser language. English is the main/fallback language; German, French, Spanish, Italian, Portuguese and Dutch are also included.</p>
+<p align="center">The UI is multilingual (11 languages) and automatically picks your browser language. English is the main/fallback language; German, French, Spanish, Italian, Portuguese, Dutch, Polish, Turkish, Swedish and Czech are also included.</p>
 
-| Start menu | Game in progress |
-| --- | --- |
-| ![Start menu](screenshots/menu.jpg) | ![Game in progress](screenshots/game.jpg) |
-| **Info dialog** | **Win screen** |
-| ![Info dialog](screenshots/info.jpg) | ![Win screen](screenshots/win.jpg) |
+<table>
+  <tr>
+    <td align="center"><strong>Start menu</strong></td>
+    <td align="center"><strong>Game in progress</strong></td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/menu.jpg" alt="Start menu"></td>
+    <td><img src="screenshots/game.jpg" alt="Game in progress"></td>
+  </tr>
+  <tr>
+    <td align="center"><strong>Info dialog</strong></td>
+    <td align="center"><strong>Win screen</strong></td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/info.jpg" alt="Info dialog"></td>
+    <td><img src="screenshots/win.jpg" alt="Win screen"></td>
+  </tr>
+</table>
 
 ## History
 
