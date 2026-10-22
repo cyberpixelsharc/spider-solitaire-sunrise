@@ -1,10 +1,12 @@
-# Spider Solitaire: Sunrise
+<p align="center"><img src="icons/favicon.svg" width="110" alt="Spider Solitaire: Sunrise logo"></p>
 
-A classic Spider Solitaire built as a pure HTML/CSS/Vanilla-JS app — no build step, no dependencies. Just open `index.html` in a browser.
+<h1 align="center">Spider Solitaire: Sunrise</h1>
 
-The UI is multilingual and automatically picks your browser language. English is the main/fallback language; German, French, Spanish, Italian, Portuguese and Dutch are also included.
+<p align="center">A classic Spider Solitaire built as a pure HTML/CSS/Vanilla-JS app — no build step, no dependencies. Just open `index.html` in a browser.</p>
 
-## Screenshots
+<p align="center">The cards must be sorted in the ten tableau columns. The goal is to build eight complete sequences, each running from King down to Ace. A complete King-to-Ace sequence in a single suit is moved automatically to one of the eight foundation frames at the top. The remaining cards can be dealt in batches from the top-left corner.</p>
+
+<p align="center">The UI is multilingual and automatically picks your browser language. English is the main/fallback language; German, French, Spanish, Italian, Portuguese and Dutch are also included.</p>
 
 | Start menu | Game in progress |
 | --- | --- |
@@ -76,6 +78,14 @@ An optional game aid can dim the cards you cannot move. Open the info dialog by 
 
 - A card can only be lifted together with the cards below it if they form a descending run in the same suit. Cards in the tableau that cannot be lifted this way are darkened slightly.
 - The setting is stored in the browser and applies to current and future games. It is off by default.
+
+## High scores
+
+The app keeps a local top-5 list per difficulty (time, moves, score and date of finished games) in your browser — nothing is uploaded.
+
+The win dialog shows the list for the difficulty you just finished, highlights your new entry and tells you when you set a new record.
+
+Clearing your browser data also clears the list.
 
 ## Languages
 

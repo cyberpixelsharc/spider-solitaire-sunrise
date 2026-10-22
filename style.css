@@ -660,6 +660,47 @@ body.menu-open #board {
   box-shadow: 0 0 0 2px rgba(62, 207, 142, 0.5);
 }
 
+.record {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.scores {
+  margin-bottom: 18px;
+  text-align: left;
+}
+
+.scores-title {
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.55;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.score-row {
+  display: grid;
+  grid-template-columns: 18px 1fr 0.8fr 0.85fr 1.05fr;
+  gap: 6px;
+  font-size: 12px;
+  padding: 3px 0;
+}
+
+.score-head {
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.45;
+}
+
+.score-row.current {
+  color: var(--accent);
+  font-weight: 700;
+}
+
 .difficulty {
   display: grid;
   gap: 10px;
@@ -879,6 +920,33 @@ body.menu-open #board {
   .app-version {
     margin-top: 8px;
     font-size: 10px;
+  }
+
+  .record {
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+
+  .scores {
+    margin-bottom: 10px;
+  }
+
+  .scores-title {
+    font-size: 9.5px;
+    margin-bottom: 4px;
+  }
+
+  .score-row {
+    font-size: 11px;
+    padding: 1px 0;
+  }
+
+  .score-head {
+    font-size: 9px;
+  }
+
+  .scores .score-row:nth-child(n + 6) {
+    display: none;
   }
 
   .result {

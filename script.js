@@ -50,7 +50,9 @@
   let collectToken = 0;
   let resizeRaf = 0;
   let saveTimer = null;
+  let winResult = null;
   const SAVE_KEY = "spider-sunrise-game";
+  const SCORES_KEY = "spider-sunrise-scores";
   try {
     assist = localStorage.getItem("spider-sunrise-assist") === "1";
   } catch (err) {
@@ -130,6 +132,7 @@
     uid = 1;
     history = [];
     collectToken++;
+    winResult = null;
     autoPlaying = false;
     autoFinishTried = false;
     autoPlan = null;
@@ -262,6 +265,120 @@
     } catch (err) {}
   }
 
+  function readScores() {
+    const out = { 1: [], 2: [], 4: [] };
+    let raw;
+    try {
+      raw = localStorage.getItem(SCORES_KEY);
+    } catch (err) {
+      return out;
+    }
+    if (!raw) return out;
+    let data;
+    try {
+      data = JSON.parse(raw);
+    } catch (err) {
+      return out;
+    }
+    if (!data || data.v !== 1) return out;
+    for (const key of [1, 2, 4]) {
+      const list = Array.isArray(data[key]) ? data[key] : [];
+      out[key] = list
+        .filter(
+          (e) =>
+            e &&
+            typeof e.t === "number" &&
+            typeof e.m === "number" &&
+            typeof e.s === "number"
+        )
+        .map((e) => ({ t: e.t, m: e.m, s: e.s, d: typeof e.d === "string" ? e.d : "" }))
+        .slice(0, 5);
+    }
+    return out;
+  }
+
+  function writeScores(data) {
+    try {
+      localStorage.setItem(
+        SCORES_KEY,
+        JSON.stringify({ v: 1, 1: data[1], 2: data[2], 4: data[4] })
+      );
+    } catch (err) {}
+  }
+
+  function recordScore() {
+    const key = difficulty === 2 || difficulty === 4 ? difficulty : 1;
+    const entry = {
+      t: elapsed,
+      m: state.moves,
+      s: state.score,
+      d: new Date().toISOString().slice(0, 10),
+    };
+    const data = readScores();
+    const list = data[key].concat(entry).sort((a, b) => b.s - a.s || a.t - b.t);
+    const rank = list.indexOf(entry) + 1;
+    data[key] = list.slice(0, 5);
+    writeScores(data);
+    return { list: data[key], rank: rank <= 5 ? rank : 0, current: entry };
+  }
+
+  function formatScoreDate(iso) {
+    if (!iso) return "";
+    const d = new Date(iso + "T00:00:00");
+    if (isNaN(d.getTime())) return iso;
+    try {
+      return new Intl.DateTimeFormat(i18n.language, { dateStyle: "short" }).format(d);
+    } catch (err) {
+      return iso;
+    }
+  }
+
+  function difficultyLabel(level) {
+    return t(level === 2 ? "menu.medium" : level === 4 ? "menu.hard" : "menu.easy");
+  }
+
+  function scoreListHTML(result) {
+    if (!result || !result.list.length) return "";
+    const head =
+      '<div class="score-row score-head"><span></span><span>' +
+      t("stats.time") +
+      "</span><span>" +
+      t("stats.moves") +
+      "</span><span>" +
+      t("stats.score") +
+      "</span><span>" +
+      t("score.date") +
+      "</span></div>";
+    const rows = result.list
+      .map(
+        (e, i) =>
+          '<div class="score-row' +
+          (e === result.current ? " current" : "") +
+          '"><span>' +
+          (i + 1) +
+          "</span><span>" +
+          formatTime(e.t) +
+          "</span><span>" +
+          e.m +
+          "</span><span>" +
+          e.s +
+          "</span><span>" +
+          formatScoreDate(e.d) +
+          "</span></div>"
+      )
+      .join("");
+    return (
+      '<div class="scores"><div class="scores-title">' +
+      t("score.title") +
+      " – " +
+      difficultyLabel(difficulty) +
+      "</div>" +
+      head +
+      rows +
+      "</div>"
+    );
+  }
+
   function readSave() {
     let raw;
     try {
@@ -313,6 +430,7 @@
     difficulty = d.d === 2 || d.d === 4 ? d.d : 1;
     history = [];
     collectToken++;
+    winResult = null;
     dealing = false;
     autoPlaying = false;
     autoFinishTried = false;
@@ -1658,16 +1776,25 @@
     stopTimer();
     clearSave();
     const ver = appVersionLine();
+    if (!winResult) winResult = recordScore();
+    const isRecord = winResult.rank === 1;
+    const winTitle = isRecord ? t("win.title") + " " + t("score.record") : t("win.title");
+    const recordLine =
+      winResult.rank > 1
+        ? '<div class="record">' + t("score.place", { place: winResult.rank }) + "</div>"
+        : "";
     overlay.innerHTML =
       '<div class="win-cards"></div>' +
       '<div class="modal">' +
-      "<h2>" + t("win.title") + "</h2>" +
+      "<h2>" + winTitle + "</h2>" +
       '<p class="sub">' + t("win.subtitle") + "</p>" +
       '<div class="result">' +
       "<div><span>" + t("stats.time") + "</span><strong>" + formatTime(elapsed) + "</strong></div>" +
       "<div><span>" + t("stats.moves") + "</span><strong>" + state.moves + "</strong></div>" +
       "<div><span>" + t("stats.score") + "</span><strong>" + state.score + "</strong></div>" +
       "</div>" +
+      recordLine +
+      scoreListHTML(winResult) +
       '<button class="btn primary big" id="btn-again">' + t("win.again") + "</button>" +
       (ver ? '<div class="app-version">' + ver + "</div>" : "") +
       "</div>";
