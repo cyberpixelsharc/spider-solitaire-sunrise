@@ -13,9 +13,7 @@
 | Start menu | Game in progress |
 | --- | --- |
 | ![Start menu](screenshots/menu.jpg) | ![Game in progress](screenshots/game.jpg) |
-
-| Info dialog | Win screen |
-| --- | --- |
+| **Info dialog** | **Win screen** |
 | ![Info dialog](screenshots/info.jpg) | ![Win screen](screenshots/win.jpg) |
 
 ## History
@@ -108,6 +106,12 @@ The UI detects the browser language on load and falls back to English:
 - Italian (`it`)
 - Portuguese (`pt`)
 - Dutch (`nl`)
+- Polish (`pl`)
+- Turkish (`tr`)
+- Swedish (`sv`)
+- Czech (`cs`)
+
+Card ranks are shown as A/J/Q/K by default; the info dialog can switch them to the letters common in your language (for example B/D/K in German, V/D/R in French, W/D/K in Polish, Kn/D/K in Swedish).
 
 Texts are stored in `i18n.js` (no libraries). Add a new language by extending the dictionary object there; missing keys automatically fall back to English.
 

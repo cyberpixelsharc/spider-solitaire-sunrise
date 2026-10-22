@@ -7,7 +7,6 @@
     D: { sym: "♦", color: "red" },
     C: { sym: "♣", color: "black" },
   };
-  const RANKS = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
   const COLS = 10;
   const RUN_LEN = 13;
   const FOUND_SLOTS = 8;
@@ -16,6 +15,16 @@
 
   const i18n = window.i18n;
   const t = (key, params) => i18n.t(key, params);
+  const RANKS_INTL = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+  const RANKS_LOCAL = [
+    "A", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+    t("card.j"), t("card.q"), t("card.k"),
+  ];
+  let localRanks = false;
+  try {
+    localRanks = localStorage.getItem("spider-sunrise-ranks") === "1";
+  } catch (err) {}
+  let RANKS = localRanks ? RANKS_LOCAL : RANKS_INTL;
   const APP = window.APP_INFO || { version: "", build: "" };
 
   const board = document.getElementById("board");
@@ -127,6 +136,18 @@
     );
   }
 
+  function applyRanks() {
+    RANKS = localRanks ? RANKS_LOCAL : RANKS_INTL;
+    cardEls.forEach((el) => {
+      const rank = Number(el.dataset.rank);
+      if (!rank) return;
+      const label = RANKS[rank - 1];
+      el.querySelectorAll(".rank").forEach((node) => {
+        node.textContent = label;
+      });
+    });
+  }
+
   function newGame(numSuits) {
     difficulty = numSuits;
     uid = 1;
@@ -181,6 +202,7 @@
       const el = document.createElement("div");
       el.className = "card down";
       el.dataset.id = card.id;
+      el.dataset.rank = card.rank;
       el.innerHTML = cardFaceHTML(card);
       cardsLayer.appendChild(el);
       cardEls.set(card.id, el);
@@ -466,6 +488,7 @@
       const el = document.createElement("div");
       el.className = "card";
       el.dataset.id = card.id;
+      el.dataset.rank = card.rank;
       el.style.transition = "none";
       el.innerHTML = cardFaceHTML(card);
       cardsLayer.appendChild(el);
@@ -1590,6 +1613,7 @@
 
         const el = document.createElement("div");
         el.className = "card win-card";
+        el.dataset.rank = run[ci].rank;
         el.innerHTML = cardFaceHTML(run[ci]);
         el.style.opacity = "1";
         el.style.zIndex = 100 + p;
@@ -1735,6 +1759,9 @@
       '<label class="opt"><span class="opt-label">' + t("info.assist") + "</span>" +
       '<span class="switch"><input type="checkbox" id="assist-toggle"' + (assist ? " checked" : "") +
       ' /><span class="track"></span></span></label>' +
+      '<label class="opt"><span class="opt-label">' + t("info.ranks") + "</span>" +
+      '<span class="switch"><input type="checkbox" id="ranks-toggle"' + (localRanks ? " checked" : "") +
+      ' /><span class="track"></span></span></label>' +
       '<button class="btn primary big" id="btn-close-info">' + t("info.close") + "</button>" +
       (installPrompt ? '<button class="btn big" id="btn-install">' + t("info.install") + "</button>" : "") +
       (ver ? '<div class="app-version">' + ver + "</div>" : "") +
@@ -1749,6 +1776,13 @@
       if (wasRunning && state) ensureTimer();
     };
     overlay.querySelector("#btn-close-info").addEventListener("click", () => infoClose());
+    overlay.querySelector("#ranks-toggle").addEventListener("change", (e) => {
+      localRanks = e.target.checked;
+      try {
+        localStorage.setItem("spider-sunrise-ranks", localRanks ? "1" : "0");
+      } catch (err) {}
+      applyRanks();
+    });
     overlay.querySelector("#assist-toggle").addEventListener("change", (e) => {
       assist = e.target.checked;
       try {
@@ -1779,10 +1813,6 @@
     if (!winResult) winResult = recordScore();
     const isRecord = winResult.rank === 1;
     const winTitle = isRecord ? t("win.title") + " " + t("score.record") : t("win.title");
-    const recordLine =
-      winResult.rank > 1
-        ? '<div class="record">' + t("score.place", { place: winResult.rank }) + "</div>"
-        : "";
     overlay.innerHTML =
       '<div class="win-cards"></div>' +
       '<div class="modal">' +
@@ -1793,7 +1823,6 @@
       "<div><span>" + t("stats.moves") + "</span><strong>" + state.moves + "</strong></div>" +
       "<div><span>" + t("stats.score") + "</span><strong>" + state.score + "</strong></div>" +
       "</div>" +
-      recordLine +
       scoreListHTML(winResult) +
       '<button class="btn primary big" id="btn-again">' + t("win.again") + "</button>" +
       (ver ? '<div class="app-version">' + ver + "</div>" : "") +

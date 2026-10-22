@@ -589,7 +589,7 @@ body.menu-open #board {
   opacity: 0.72;
   font-size: 13.5px;
   line-height: 1.55;
-  margin-bottom: 22px;
+  margin-bottom: 18px;
 }
 
 .opt {
@@ -597,7 +597,7 @@ body.menu-open #board {
   align-items: center;
   justify-content: space-between;
   gap: 14px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
   padding: 11px 14px;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -660,13 +660,6 @@ body.menu-open #board {
   box-shadow: 0 0 0 2px rgba(62, 207, 142, 0.5);
 }
 
-.record {
-  color: var(--accent);
-  font-weight: 700;
-  font-size: 14px;
-  margin-bottom: 10px;
-}
-
 .scores {
   margin-bottom: 18px;
   text-align: left;
@@ -687,6 +680,7 @@ body.menu-open #board {
   gap: 6px;
   font-size: 12px;
   padding: 3px 0;
+  text-align: center;
 }
 
 .score-head {
@@ -920,11 +914,6 @@ body.menu-open #board {
   .app-version {
     margin-top: 8px;
     font-size: 10px;
-  }
-
-  .record {
-    font-size: 12px;
-    margin-bottom: 6px;
   }
 
   .scores {
