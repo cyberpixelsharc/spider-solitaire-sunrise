@@ -8,7 +8,7 @@
 
 <p align="center">The cards must be sorted in the ten tableau columns. The goal is to build eight complete sequences, each running from King down to Ace. A complete King-to-Ace sequence in a single suit is moved automatically to one of the eight foundation frames at the top. The remaining cards can be dealt in batches from the top-left corner.</p>
 
-<p align="center">The UI is multilingual (11 languages) and automatically picks your browser language. English is the main/fallback language — German, French, Spanish, Italian, Portuguese, Dutch, Polish, Turkish, Swedish and Czech are also included.</p>
+<p align="center">The UI is multilingual (35 languages) and automatically picks your browser language. English is the main/fallback language — German, French, Spanish, Italian, Portuguese, Dutch, Polish, Turkish, Swedish, Czech, Danish, Norwegian, Finnish, Hungarian, Slovak, Slovenian, Croatian, Greek, Russian, Ukrainian, Romanian, Bulgarian, Serbian, Vietnamese, Indonesian, Japanese, Chinese, Korean, Catalan, Filipino, Afrikaans, Lithuanian, Latvian and Estonian are also included.</p>
 
 <table>
   <tr>
@@ -123,8 +123,32 @@ The UI detects the browser language on load and falls back to English:
 - Turkish (`tr`)
 - Swedish (`sv`)
 - Czech (`cs`)
+- Danish (`da`)
+- Norwegian (`nb`)
+- Finnish (`fi`)
+- Hungarian (`hu`)
+- Slovak (`sk`)
+- Slovenian (`sl`)
+- Croatian (`hr`)
+- Greek (`el`)
+- Russian (`ru`)
+- Ukrainian (`uk`)
+- Romanian (`ro`)
+- Bulgarian (`bg`)
+- Serbian (`sr`)
+- Vietnamese (`vi`)
+- Indonesian (`id`)
+- Japanese (`ja`)
+- Chinese (`zh`)
+- Korean (`ko`)
+- Catalan (`ca`)
+- Filipino (`tl`)
+- Afrikaans (`af`)
+- Lithuanian (`lt`)
+- Latvian (`lv`)
+- Estonian (`et`)
 
-Card ranks are shown as A/J/Q/K by default — the info dialog can switch them to the letters common in your language (for example B/D/K in German, V/D/R in French, W/D/K in Polish, Kn/D/K in Swedish).
+Card ranks are shown as A/J/Q/K by default — the info dialog can switch them to the letters common in your language (for example B/D/K in German and Hungarian, V/D/R in French, W/D/K in Polish, Kn/D/K in Swedish, Danish and Norwegian, В/Д/К in Russian and Ukrainian, V/D/R in Romanian, Ж/Д/К in Serbian).
 
 Texts are stored in `i18n.js` (no libraries). Add a new language by extending the dictionary object there — missing keys automatically fall back to English.
 

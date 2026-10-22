@@ -362,7 +362,7 @@
   function scoreListHTML(result) {
     if (!result || !result.list.length) return "";
     const head =
-      '<div class="score-row score-head"><span></span><span>' +
+      '<div class="score-row score-head"><span>#</span><span>' +
       t("stats.time") +
       "</span><span>" +
       t("stats.moves") +
