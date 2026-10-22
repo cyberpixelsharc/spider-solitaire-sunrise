@@ -112,41 +112,41 @@ Clearing your browser data also clears the list.
 
 The UI detects the browser language on load and falls back to English:
 
-- English (`en`, fallback)
-- German (`de`)
-- French (`fr`)
-- Spanish (`es`)
-- Italian (`it`)
-- Portuguese (`pt`)
-- Dutch (`nl`)
-- Polish (`pl`)
-- Turkish (`tr`)
-- Swedish (`sv`)
-- Czech (`cs`)
-- Danish (`da`)
-- Norwegian (`nb`)
-- Finnish (`fi`)
-- Hungarian (`hu`)
-- Slovak (`sk`)
-- Slovenian (`sl`)
-- Croatian (`hr`)
-- Greek (`el`)
-- Russian (`ru`)
-- Ukrainian (`uk`)
-- Romanian (`ro`)
-- Bulgarian (`bg`)
-- Serbian (`sr`)
-- Vietnamese (`vi`)
-- Indonesian (`id`)
-- Japanese (`ja`)
-- Chinese (`zh`)
-- Korean (`ko`)
-- Catalan (`ca`)
-- Filipino (`tl`)
-- Afrikaans (`af`)
-- Lithuanian (`lt`)
-- Latvian (`lv`)
-- Estonian (`et`)
+- English (`en`, fallback) — English
+- German (`de`) — Deutsch
+- French (`fr`) — Français
+- Spanish (`es`) — Español
+- Italian (`it`) — Italiano
+- Portuguese (`pt`) — Português
+- Dutch (`nl`) — Nederlands
+- Polish (`pl`) — Polski
+- Turkish (`tr`) — Türkçe
+- Swedish (`sv`) — Svenska
+- Czech (`cs`) — Čeština
+- Danish (`da`) — Dansk
+- Norwegian (`nb`) — Norsk bokmål
+- Finnish (`fi`) — Suomi
+- Hungarian (`hu`) — Magyar
+- Slovak (`sk`) — Slovenčina
+- Slovenian (`sl`) — Slovenščina
+- Croatian (`hr`) — Hrvatski
+- Greek (`el`) — Ελληνικά
+- Russian (`ru`) — Русский
+- Ukrainian (`uk`) — Українська
+- Romanian (`ro`) — Română
+- Bulgarian (`bg`) — Български
+- Serbian (`sr`) — Српски
+- Vietnamese (`vi`) — Tiếng Việt
+- Indonesian (`id`) — Bahasa Indonesia
+- Japanese (`ja`) — 日本語
+- Chinese (`zh`) — 中文
+- Korean (`ko`) — 한국어
+- Catalan (`ca`) — Català
+- Filipino (`tl`) — Filipino
+- Afrikaans (`af`) — Afrikaans
+- Lithuanian (`lt`) — Lietuvių
+- Latvian (`lv`) — Latviešu
+- Estonian (`et`) — Eesti
 
 Card ranks are shown as A/J/Q/K by default — the info dialog can switch them to the letters common in your language (for example B/D/K in German and Hungarian, V/D/R in French, W/D/K in Polish, Kn/D/K in Swedish, Danish and Norwegian, В/Д/К in Russian and Ukrainian, V/D/R in Romanian, Ж/Д/К in Serbian).
 
