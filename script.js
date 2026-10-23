@@ -11,7 +11,11 @@
   const RUN_LEN = 13;
   const FOUND_SLOTS = 8;
   const STOCK_LAYERS = 5;
-  const DEAL_LEADIN = 400;
+  const DEAL_STAGGER = 28;
+  const DEAL_FLIGHT = 440;
+  const DEAL_TAIL = 120;
+  const FAN_STAGGER = 45;
+  const FAN_FLIGHT = 420;
 
   const i18n = window.i18n;
   const t = (key, params) => i18n.t(key, params);
@@ -56,6 +60,7 @@
   let installPrompt = null;
   let assist = false;
   let lastDealAt = 0;
+  let dealToken = 0;
   let collectToken = 0;
   let resizeRaf = 0;
   let saveTimer = null;
@@ -167,14 +172,17 @@
     currentPositions = new Map();
     board.scrollTop = 0;
     dealing = true;
+    const token = ++dealToken;
 
     const deck = shuffle(buildDeck(numSuits));
 
     const columns = Array.from({ length: COLS }, () => []);
+    const dealOrder = [];
     for (let i = 0; i < 54; i++) {
       const card = deck.pop();
       card.id = uid++;
       columns[i % COLS].push(card);
+      dealOrder.push(card);
     }
     columns.forEach((col) => {
       col[col.length - 1].faceUp = true;
@@ -212,39 +220,71 @@
     updateStats();
     measure();
 
+    const places = computePlacements();
     const sx = layoutData.stockX;
     const sy = layoutData.stockY;
+
     cardEls.forEach((el) => {
       el.style.transition = "none";
       el.style.transitionDelay = "";
       el.style.transform = "translate3d(" + sx + "px," + sy + "px,0)";
     });
+    dealOrder.forEach((card, i) => {
+      cardEls.get(card.id).style.zIndex = String(1000 + dealOrder.length - i);
+    });
+    stockCards.forEach((card, idx) => {
+      cardEls.get(card.id).style.zIndex = String(500 + Math.floor(idx / COLS));
+    });
 
     void cardsLayer.offsetWidth;
 
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      render();
+      dealing = false;
+      return;
+    }
+
     requestAnimationFrame(() => {
-      const pilePlaces = computePlacements();
-      stockCards.forEach((card) => {
+      if (token !== dealToken) return;
+      dealOrder.forEach((card, i) => {
         const el = cardEls.get(card.id);
-        const p = pilePlaces.get(card.id);
-        el.style.transform = "translate3d(" + p.x + "px," + p.y + "px,0)";
-        el.classList.toggle("top", !!p.top);
-      });
-      cardEls.forEach((el) => {
+        const p = places.get(card.id);
+        const delay = i * DEAL_STAGGER;
+        setTimeout(() => {
+          if (token !== dealToken) return;
+          el.style.zIndex = "9000";
+        }, delay);
         el.style.transition = "";
+        el.style.transitionDelay = delay + "ms";
+        el.style.transform = "translate3d(" + p.x + "px," + p.y + "px,0)";
+        setTimeout(() => {
+          if (token !== dealToken) return;
+          el.style.zIndex = String(p.z);
+          el.classList.toggle("down", p.down);
+        }, delay + DEAL_FLIGHT);
       });
+
+      const dealEnd = (dealOrder.length - 1) * DEAL_STAGGER + DEAL_FLIGHT + DEAL_TAIL;
       setTimeout(() => {
-        cardEls.forEach((el) => {
-          el.style.transition = "none";
-          el.style.transitionDelay = "";
-        });
-        render();
-        void cardsLayer.offsetWidth;
-        cardEls.forEach((el) => {
+        if (token !== dealToken) return;
+        stockCards.forEach((card, idx) => {
+          const el = cardEls.get(card.id);
+          const p = places.get(card.id);
           el.style.transition = "";
+          el.classList.toggle("top", !!p.top);
+          el.style.transitionDelay = Math.floor(idx / COLS) * FAN_STAGGER + "ms";
+          el.style.transform = "translate3d(" + p.x + "px," + p.y + "px,0)";
+          el.style.zIndex = String(p.z);
         });
-        dealing = false;
-      }, DEAL_LEADIN);
+        setTimeout(() => {
+          if (token !== dealToken) return;
+          cardEls.forEach((el) => {
+            el.style.transitionDelay = "";
+          });
+          render();
+          dealing = false;
+        }, (STOCK_LAYERS - 1) * FAN_STAGGER + FAN_FLIGHT);
+      }, dealEnd);
     });
   }
 
@@ -1364,7 +1404,7 @@
   });
 
   function scheduleLayout() {
-    if (!state || resizeRaf) return;
+    if (!state || dealing || resizeRaf) return;
     resizeRaf = requestAnimationFrame(() => {
       resizeRaf = 0;
       if (!state) return;
