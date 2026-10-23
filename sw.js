@@ -1,4 +1,4 @@
-const CACHE = "spider-sunrise-v15";
+const CACHE = "spider-sunrise-v16";
 
 const ASSETS = [
   "./",

@@ -8,7 +8,7 @@
 
 <p align="center">The cards must be sorted in the ten tableau columns. The goal is to build eight complete sequences, each running from King down to Ace. A complete King-to-Ace sequence in a single suit is moved automatically to one of the eight foundation frames at the top. The remaining cards can be dealt in batches from the top-left corner.</p>
 
-<p align="center">The UI is multilingual (35 languages) and automatically picks your browser language. English is the main/fallback language — German, French, Spanish, Italian, Portuguese, Dutch, Polish, Turkish, Swedish, Czech, Danish, Norwegian, Finnish, Hungarian, Slovak, Slovenian, Croatian, Greek, Russian, Ukrainian, Romanian, Bulgarian, Serbian, Vietnamese, Indonesian, Japanese, Chinese, Korean, Catalan, Filipino, Afrikaans, Lithuanian, Latvian and Estonian are also included.</p>
+<p align="center">The UI is multilingual (78 languages) and automatically picks your browser language — English is the main/fallback language.</p>
 
 <table>
   <tr>
@@ -110,43 +110,166 @@ Clearing your browser data also clears the list.
 
 ## Languages
 
-The UI detects the browser language on load and falls back to English:
+The UI detects the browser language on load and falls back to English.
 
-- English (`en`, fallback) — English
-- German (`de`) — Deutsch
-- French (`fr`) — Français
-- Spanish (`es`) — Español
-- Italian (`it`) — Italiano
-- Portuguese (`pt`) — Português
-- Dutch (`nl`) — Nederlands
-- Polish (`pl`) — Polski
-- Turkish (`tr`) — Türkçe
-- Swedish (`sv`) — Svenska
-- Czech (`cs`) — Čeština
-- Danish (`da`) — Dansk
-- Norwegian (`nb`) — Norsk bokmål
-- Finnish (`fi`) — Suomi
-- Hungarian (`hu`) — Magyar
-- Slovak (`sk`) — Slovenčina
-- Slovenian (`sl`) — Slovenščina
-- Croatian (`hr`) — Hrvatski
-- Greek (`el`) — Ελληνικά
-- Russian (`ru`) — Русский
-- Ukrainian (`uk`) — Українська
-- Romanian (`ro`) — Română
-- Bulgarian (`bg`) — Български
-- Serbian (`sr`) — Српски
-- Vietnamese (`vi`) — Tiếng Việt
-- Indonesian (`id`) — Bahasa Indonesia
-- Japanese (`ja`) — 日本語
-- Chinese (`zh`) — 中文
-- Korean (`ko`) — 한국어
-- Catalan (`ca`) — Català
-- Filipino (`tl`) — Filipino
-- Afrikaans (`af`) — Afrikaans
-- Lithuanian (`lt`) — Lietuvių
-- Latvian (`lv`) — Latviešu
-- Estonian (`et`) — Eesti
+<table>
+  <tr>
+    <td>Afrikaans (<code>af</code>) — Afrikaans</td>
+    <td>Kurdish (<code>ku</code>) — Kurdî</td>
+  </tr>
+  <tr>
+    <td>Albanian (<code>sq</code>) — Shqip</td>
+    <td>Kyrgyz (<code>ky</code>) — Кыргызча</td>
+  </tr>
+  <tr>
+    <td>Asturian (<code>ast</code>) — Asturianu</td>
+    <td>Latvian (<code>lv</code>) — Latviešu</td>
+  </tr>
+  <tr>
+    <td>Azerbaijani (<code>az</code>) — Azərbaycanca</td>
+    <td>Lithuanian (<code>lt</code>) — Lietuvių</td>
+  </tr>
+  <tr>
+    <td>Basque (<code>eu</code>) — Euskara</td>
+    <td>Low German (<code>nds</code>) — Plattdüütsch</td>
+  </tr>
+  <tr>
+    <td>Belarusian (<code>be</code>) — Беларуская</td>
+    <td>Luxembourgish (<code>lb</code>) — Lëtzebuergesch</td>
+  </tr>
+  <tr>
+    <td>Bosnian (<code>bs</code>) — Bosanski</td>
+    <td>Macedonian (<code>mk</code>) — Македонски</td>
+  </tr>
+  <tr>
+    <td>Breton (<code>br</code>) — Brezhoneg</td>
+    <td>Malagasy (<code>mg</code>) — Malagasy</td>
+  </tr>
+  <tr>
+    <td>Bulgarian (<code>bg</code>) — Български</td>
+    <td>Malay (<code>ms</code>) — Bahasa Melayu</td>
+  </tr>
+  <tr>
+    <td>Catalan (<code>ca</code>) — Català</td>
+    <td>Maltese (<code>mt</code>) — Malti</td>
+  </tr>
+  <tr>
+    <td>Chinese (<code>zh</code>) — 中文</td>
+    <td>Mongolian (<code>mn</code>) — Монгол</td>
+  </tr>
+  <tr>
+    <td>Corsican (<code>co</code>) — Corsu</td>
+    <td>Norwegian (<code>nb</code>) — Norsk bokmål</td>
+  </tr>
+  <tr>
+    <td>Croatian (<code>hr</code>) — Hrvatski</td>
+    <td>Occitan (<code>oc</code>) — Occitan</td>
+  </tr>
+  <tr>
+    <td>Czech (<code>cs</code>) — Čeština</td>
+    <td>Polish (<code>pl</code>) — Polski</td>
+  </tr>
+  <tr>
+    <td>Danish (<code>da</code>) — Dansk</td>
+    <td>Portuguese (<code>pt</code>) — Português</td>
+  </tr>
+  <tr>
+    <td>Dutch (<code>nl</code>) — Nederlands</td>
+    <td>Romansh (<code>rm</code>) — Rumantsch</td>
+  </tr>
+  <tr>
+    <td>English (<code>en</code>, fallback)</td>
+    <td>Romanian (<code>ro</code>) — Română</td>
+  </tr>
+  <tr>
+    <td>Esperanto (<code>eo</code>) — Esperanto</td>
+    <td>Russian (<code>ru</code>) — Русский</td>
+  </tr>
+  <tr>
+    <td>Estonian (<code>et</code>) — Eesti</td>
+    <td>Rusyn (<code>rue</code>) — Русиньскый</td>
+  </tr>
+  <tr>
+    <td>Faroese (<code>fo</code>) — Føroyskt</td>
+    <td>Sardinian (<code>sc</code>) — Sardu</td>
+  </tr>
+  <tr>
+    <td>Filipino (<code>tl</code>) — Filipino</td>
+    <td>Scottish Gaelic (<code>gd</code>) — Gàidhlig</td>
+  </tr>
+  <tr>
+    <td>Finnish (<code>fi</code>) — Suomi</td>
+    <td>Serbian (<code>sr</code>) — Српски</td>
+  </tr>
+  <tr>
+    <td>French (<code>fr</code>) — Français</td>
+    <td>Sicilian (<code>scn</code>) — Sicilianu</td>
+  </tr>
+  <tr>
+    <td>Frisian (<code>fy</code>) — Frysk</td>
+    <td>Slovak (<code>sk</code>) — Slovenčina</td>
+  </tr>
+  <tr>
+    <td>Friulian (<code>fur</code>) — Furlan</td>
+    <td>Slovenian (<code>sl</code>) — Slovenščina</td>
+  </tr>
+  <tr>
+    <td>Galician (<code>gl</code>) — Galego</td>
+    <td>Somali (<code>so</code>) — Soomaali</td>
+  </tr>
+  <tr>
+    <td>German (<code>de</code>) — Deutsch</td>
+    <td>Spanish (<code>es</code>) — Español</td>
+  </tr>
+  <tr>
+    <td>Greek (<code>el</code>) — Ελληνικά</td>
+    <td>Swahili (<code>sw</code>) — Kiswahili</td>
+  </tr>
+  <tr>
+    <td>Haitian Creole (<code>ht</code>) — Kreyòl ayisyen</td>
+    <td>Swedish (<code>sv</code>) — Svenska</td>
+  </tr>
+  <tr>
+    <td>Hausa (<code>ha</code>) — Hausa</td>
+    <td>Tajik (<code>tg</code>) — Тоҷикӣ</td>
+  </tr>
+  <tr>
+    <td>Hungarian (<code>hu</code>) — Magyar</td>
+    <td>Tatar (<code>tt</code>) — Татарча</td>
+  </tr>
+  <tr>
+    <td>Icelandic (<code>is</code>) — Íslenska</td>
+    <td>Turkish (<code>tr</code>) — Türkçe</td>
+  </tr>
+  <tr>
+    <td>Indonesian (<code>id</code>) — Bahasa Indonesia</td>
+    <td>Turkmen (<code>tk</code>) — Türkmençe</td>
+  </tr>
+  <tr>
+    <td>Irish (<code>ga</code>) — Gaeilge</td>
+    <td>Ukrainian (<code>uk</code>) — Українська</td>
+  </tr>
+  <tr>
+    <td>Italian (<code>it</code>) — Italiano</td>
+    <td>Upper Sorbian (<code>hsb</code>) — Hornjoserbsce</td>
+  </tr>
+  <tr>
+    <td>Japanese (<code>ja</code>) — 日本語</td>
+    <td>Uzbek (<code>uz</code>) — Oʻzbekcha</td>
+  </tr>
+  <tr>
+    <td>Kashubian (<code>csb</code>) — Kaszëbsczi</td>
+    <td>Vietnamese (<code>vi</code>) — Tiếng Việt</td>
+  </tr>
+  <tr>
+    <td>Kazakh (<code>kk</code>) — Қазақша</td>
+    <td>Welsh (<code>cy</code>) — Cymraeg</td>
+  </tr>
+  <tr>
+    <td>Korean (<code>ko</code>) — 한국어</td>
+    <td>Zulu (<code>zu</code>) — isiZulu</td>
+  </tr>
+</table>
 
 Card ranks are shown as A/J/Q/K by default — the info dialog can switch them to the letters common in your language (for example B/D/K in German and Hungarian, V/D/R in French, W/D/K in Polish, Kn/D/K in Swedish, Danish and Norwegian, В/Д/К in Russian and Ukrainian, V/D/R in Romanian, Ж/Д/К in Serbian).
 
